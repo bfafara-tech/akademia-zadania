@@ -1,554 +1,675 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arkusz BEP - Próg Rentowności | Akademia Managera</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>W2 — Obliczenie Progu Rentowności (BEP)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f5f5f5;
-            padding: 20px;
-        }
+    :root {
+      --teal:       #1d4d3f;
+      --teal-dark:  #163a2f;
+      --teal-light: #eef2ee;
+      --teal-mid:   #c2d4ce;
+      --orange:     #E86B2A;
+      --text:       #1a1a1a;
+      --muted:      #555;
+      --border:     #d4ddd8;
+      --bg:         #f5f2eb;
+    }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 40px 20px;
+      padding-top: 72px;
+    }
 
-        header {
-            border-bottom: 3px solid #2563eb;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 14px;
+      padding: 48px 52px;
+      box-shadow: 0 2px 20px rgba(29,77,63,0.10);
+    }
 
-        h1 {
-            color: #1e40af;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
+    /* HEADER */
+    .header { border-bottom: 3px solid var(--teal); padding-bottom: 20px; margin-bottom: 28px; }
+    .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: var(--teal-dark); }
+    .header .subtitle { font-size: 14px; color: var(--muted); margin-top: 6px; }
+    .deadline { display: inline-block; margin-top: 12px; background: var(--teal); color: #fff; font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 4px; letter-spacing: 0.3px; }
 
-        .meta {
-            color: #6b7280;
-            font-size: 14px;
-        }
+    /* CALLOUTS */
+    .callout { background: var(--teal-light); border-left: 4px solid var(--teal); padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 28px; font-size: 14px; color: var(--muted); line-height: 1.65; }
+    .callout em { font-style: italic; color: var(--teal-dark); }
+    .callout-warn { background: #fdf6e3; border-left-color: #b8860b; color: #4a3a10; }
 
-        h2 {
-            color: #1e40af;
-            font-size: 20px;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #e5e7eb;
-        }
+    /* TWO-TRACK */
+    .two-track { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+    .track-item { border-left: 4px solid; padding: 10px 16px; border-radius: 0 6px 6px 0; }
+    .track-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 3px; }
+    .track-text { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+    .track-owner  { border-color: var(--orange); background: #fdf1eb; }
+    .track-owner  .track-label { color: var(--orange); }
+    .track-manager { border-color: #4CC9C0; background: #ebf8f7; }
+    .track-manager .track-label { color: #0e8a84; }
 
-        h3 {
-            color: #374151;
-            font-size: 16px;
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
+    /* KROK */
+    .krok { margin-bottom: 40px; }
+    .krok-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .krok-num { width: 36px; height: 36px; background: var(--teal); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; }
+    .krok-header h2 { font-size: 17px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--teal-dark); }
+    .krok p { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
 
-        .info-box {
-            background: #eff6ff;
-            border-left: 4px solid #3b82f6;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
+    /* TABELA KOSZTÓW */
+    .tabela-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead th { background: var(--teal); color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    tbody tr:nth-child(even) { background: #f8f7f3; }
+    tbody tr:hover { background: var(--teal-light); }
+    tbody td { padding: 0; border-bottom: 1px solid var(--border); vertical-align: middle; }
 
-        .warning-box {
-            background: #fef3c7;
-            border-left: 4px solid #f59e0b;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
+    .td-label { padding: 9px 14px; font-size: 13.5px; color: var(--muted); width: 260px; }
+    .td-input-text input[type="text"] { width: 100%; border: none; outline: none; background: transparent; font-size: 13.5px; padding: 9px 14px; font-family: inherit; color: var(--text); }
+    .td-kwota { width: 140px; }
+    .td-kwota input[type="number"] { width: 100%; border: none; outline: none; background: transparent; font-size: 13.5px; padding: 9px 14px; font-family: inherit; color: var(--text); text-align: right; }
+    .td-del { width: 36px; text-align: center; }
+    .btn-del { background: none; border: none; cursor: pointer; color: #bbb; font-size: 16px; padding: 4px 6px; border-radius: 4px; transition: color 0.15s, background 0.15s; }
+    .btn-del:hover { color: #c0392b; background: #fdecea; }
 
-        .input-group {
-            margin-bottom: 15px;
-        }
+    .btn-add-row { display: flex; align-items: center; gap: 7px; margin-top: 10px; background: none; border: 1.5px dashed var(--teal-mid); color: var(--teal); font-size: 13px; font-weight: 600; font-family: inherit; padding: 7px 16px; border-radius: 6px; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+    .btn-add-row:hover { background: var(--teal-light); border-color: var(--teal); }
 
-        label {
-            display: block;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 5px;
-        }
+    .suma-row td { background: var(--teal-light) !important; font-weight: 700; border-top: 2px solid var(--teal-mid); }
+    .suma-val { padding: 9px 14px; font-size: 14px; font-weight: 700; color: var(--teal-dark); text-align: right; }
 
-        input[type="text"],
-        input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e5e7eb;
-            border-radius: 6px;
-            font-size: 16px;
-        }
+    /* FORMULA BOX */
+    .formula-box { background: var(--teal-light); border: 2px solid var(--teal); border-radius: 8px; padding: 20px 24px; margin: 16px 0; }
+    .formula-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); margin-bottom: 12px; }
+    .formula-line { font-size: 15px; color: var(--teal-dark); margin-bottom: 6px; line-height: 1.5; }
+    .formula-line strong { color: var(--orange); }
+    .formula-result { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--teal-mid); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .formula-result-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+    .formula-result-val { font-size: 28px; font-weight: 800; color: var(--teal-dark); min-width: 80px; }
+    .formula-result-unit { font-size: 13px; color: var(--muted); }
 
-        input[type="text"]:focus,
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #3b82f6;
-        }
+    /* SINGLE ROW INPUTS */
+    .field-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; flex-wrap: wrap; }
+    .field-row label { font-size: 14px; font-weight: 600; min-width: 260px; color: var(--text); }
+    .field-row input[type="number"] { border: none; border-bottom: 2px solid var(--teal); outline: none; font-size: 15px; padding: 4px 6px; width: 120px; background: transparent; font-family: inherit; text-align: right; color: var(--text); }
+    .field-row .unit { font-size: 13px; color: var(--muted); }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
+    /* PORÓWNANIE */
+    .porownanie-box { border-radius: 8px; padding: 18px 22px; margin-top: 16px; font-size: 14px; line-height: 1.65; }
+    .porownanie-box.neutral { background: var(--teal-light); border-left: 4px solid var(--teal-mid); }
+    .porownanie-box.ok  { background: #eaf6ee; border-left: 4px solid #2e8b57; }
+    .porownanie-box.bad { background: #fdecea; border-left: 4px solid #c0392b; }
+    .porownanie-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; color: var(--muted); }
+    .porownanie-wynik { font-size: 20px; font-weight: 800; color: var(--teal-dark); }
 
-        th {
-            background: #f3f4f6;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-            color: #374151;
-            border-bottom: 2px solid #d1d5db;
-        }
+    /* PYTANIE KOŃCOWE */
+    .pytanie-box { background: var(--teal-light); border-left: 4px solid var(--teal); padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 16px; font-size: 15px; font-style: italic; color: var(--teal-dark); line-height: 1.6; }
+    .odpowiedz-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 10px; }
+    textarea { width: 100%; min-height: 120px; border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-size: 14px; font-family: inherit; color: var(--text); resize: vertical; outline: none; line-height: 1.6; }
+    textarea:focus { border-color: var(--teal); }
 
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
-        }
+    /* ODDANIE */
+    .oddanie { background: var(--teal); color: #fff; border-radius: 10px; padding: 24px 28px; margin-top: 8px; }
+    .oddanie h2 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+    .oddanie p { font-size: 13.5px; line-height: 1.65; color: rgba(255,255,255,0.85); margin-bottom: 8px; }
+    .oddanie p strong { color: #fff; }
+    .oddanie .discord { display: inline-block; background: #5865F2; color: #fff; font-weight: 700; font-size: 13px; padding: 5px 14px; border-radius: 5px; margin-left: 4px; }
 
-        .total-row {
-            background: #f9fafb;
-            font-weight: 600;
-        }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
+    .note { font-size: 12.5px; color: #888; font-style: italic; margin-top: 6px; }
 
-        .formula-box {
-            background: #f3f4f6;
-            padding: 20px;
-            border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            margin: 20px 0;
-            text-align: center;
-            font-size: 18px;
-        }
+    /* POBIERZ */
+    .pobierz-section { margin-top: 20px; padding: 20px 24px; background: var(--teal-light); border-radius: 10px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .btn-pobierz { display: flex; align-items: center; gap: 10px; background: var(--teal); color: #fff; border: none; font-size: 14px; font-weight: 700; font-family: inherit; padding: 11px 24px; border-radius: 7px; cursor: pointer; transition: background 0.15s; }
+    .btn-pobierz:hover { background: var(--teal-dark); }
+    .pobierz-info { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
-        .checkbox-group {
-            margin: 10px 0;
-        }
+    /* AUTOSAVE */
+    .autosave-bar { position: fixed; top: 0; left: 0; right: 0; background: var(--teal-dark); color: #fff; font-size: 12px; font-family: 'Segoe UI', Arial, sans-serif; padding: 6px 20px; display: flex; align-items: center; gap: 10px; z-index: 999; }
+    .autosave-bar span { opacity: 0.85; }
+    .autosave-bar .as-status { font-weight: 600; opacity: 1; }
 
-        .checkbox-group label {
-            display: inline-flex;
-            align-items: center;
-            margin-right: 20px;
-            font-weight: normal;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e5e7eb;
-            border-radius: 6px;
-            font-size: 16px;
-            font-family: inherit;
-            min-height: 80px;
-        }
-
-        .submit-box {
-            background: #f0fdf4;
-            border: 2px solid #10b981;
-            padding: 20px;
-            border-radius: 6px;
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .submit-box h3 {
-            color: #065f46;
-            margin-top: 0;
-        }
-
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-
-            .container {
-                box-shadow: none;
-            }
-
-            input, textarea {
-                border: none;
-                border-bottom: 1px solid #000;
-            }
-        }
-    </style>
+    @media print {
+      body { background: #fff; padding: 0; }
+      .container { box-shadow: none; padding: 20px; }
+      .btn-add-row, .btn-del, .pobierz-section, .autosave-bar { display: none; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>ARKUSZ BEP - Próg Rentowności Twojej Placówki</h1>
-            <div class="meta">
-                <strong>Akademia Managera</strong> | Tydzień 1 - Dashboard 6 Liczb
-            </div>
-        </header>
 
-        <div class="info-box">
-            <strong>Instrukcja:</strong>
-            <ol style="margin: 10px 0 0 20px;">
-                <li>Zbierz dane ze swojej księgowości (koszty miesięczne)</li>
-                <li>Wypełnij poniższy arkusz</li>
-                <li>Policz BEP według wzoru</li>
-                <li>Wyślij wypełniony arkusz przed warsztatem LIVE</li>
-            </ol>
-        </div>
+<div class="autosave-bar">
+  <span>&#128190;</span>
+  <span>Postęp zapisuje się automatycznie w tej przeglądarce.</span>
+  <span class="as-status" id="as-status">Możesz zamknąć i wrócić później.</span>
+</div>
 
-        <!-- DANE PODSTAWOWE -->
-        <h2>Twoje Dane</h2>
+<div class="container">
 
-        <div class="input-group">
-            <label>Nazwa placówki:</label>
-            <input type="text" placeholder="Np. Gabinet Fizjoterapii Zdrowie">
-        </div>
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Obliczenie Progu Rentowności (BEP)</h1>
+    <div class="subtitle">Zadanie W2 &nbsp;|&nbsp; Akademia Managera &nbsp;|&nbsp; prowadzący: Marcin Cebula</div>
+    <div class="deadline">Happyline: 20.04.2026 (poniedziałek), godz. 23:59</div>
+  </div>
 
-        <div class="input-group">
-            <label>Liczba terapeutów:</label>
-            <input type="number" placeholder="Np. 4">
-        </div>
-
-        <div class="input-group">
-            <label>Liczba dni roboczych/miesiąc:</label>
-            <input type="number" placeholder="Zazwyczaj 22">
-        </div>
-
-        <div class="input-group">
-            <label>Data wypełnienia:</label>
-            <input type="text" placeholder="DD.MM.RRRR">
-        </div>
-
-        <!-- KOSZTY STAŁE -->
-        <h2>Część 1: Koszty Stałe Miesięczne</h2>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Pozycja</th>
-                    <th style="width: 200px;">Kwota (zł)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Wynagrodzenia (brutto + ZUS)</strong></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Terapeuci</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Recepcja</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Inne (sprzątanie, księgowa)</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td><strong>Czynsz</strong></td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td><strong>Media</strong></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Prąd</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Woda</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Internet, telefon</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td><strong>Marketing</strong></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Reklamy (Meta, Google)</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Strona www</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Inne</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td><strong>Systemy i oprogramowanie</strong></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">System do wizyt</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Inne subskrypcje</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td><strong>Księgowość</strong></td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td><strong>Ubezpieczenia</strong></td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td><strong>Inne koszty stałe</strong></td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr class="total-row">
-                    <td><strong>RAZEM KOSZTY STAŁE:</strong></td>
-                    <td><input type="number" placeholder="Policz sumę" style="font-weight: 600;"></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- CENA I KOSZT ZMIENNY -->
-        <h2>Część 2: Cena i Koszt Zmienny</h2>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Pozycja</th>
-                    <th style="width: 200px;">Kwota (zł)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Średnia cena wizyty</strong></td>
-                    <td><input type="number" placeholder="Np. 180"></td>
-                </tr>
-                <tr>
-                    <td><strong>Koszt zmienny 1 wizyty</strong></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Materiały (żele, taśmy)</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Pranie ręczników</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr>
-                    <td style="padding-left: 30px;">Inne</td>
-                    <td><input type="number" placeholder="0"></td>
-                </tr>
-                <tr class="total-row">
-                    <td><strong>RAZEM KOSZT ZMIENNY:</strong></td>
-                    <td><input type="number" placeholder="Policz sumę" style="font-weight: 600;"></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- OBLICZENIE BEP -->
-        <h2>Część 3: Obliczenie BEP</h2>
-
-        <div class="formula-box">
-            BEP = Koszty Stałe / (Cena Wizyty - Koszt Zmienny)
-        </div>
-
-        <div class="input-group">
-            <label>Koszty Stałe (z części 1):</label>
-            <input type="number" placeholder="0">
-        </div>
-
-        <div class="input-group">
-            <label>Cena Wizyty:</label>
-            <input type="number" placeholder="0">
-        </div>
-
-        <div class="input-group">
-            <label>Koszt Zmienny (z części 2):</label>
-            <input type="number" placeholder="0">
-        </div>
-
-        <div class="input-group">
-            <label>Różnica (Cena - Koszt Zmienny):</label>
-            <input type="number" placeholder="Policz: Cena - Koszt Zmienny">
-        </div>
-
-        <div class="input-group" style="margin-top: 20px;">
-            <label style="color: #1e40af; font-size: 18px;">BEP (wizyt miesięcznie):</label>
-            <input type="number" placeholder="Policz: Koszty Stałe / Różnica" style="border-color: #3b82f6; font-size: 18px; font-weight: 600;">
-        </div>
-
-        <!-- PRZELICZENIE -->
-        <h2>Część 4: Przeliczenie na Dzień i Terapeutę</h2>
-
-        <div class="input-group">
-            <label>BEP wizyt miesięcznie:</label>
-            <input type="number" placeholder="Z części 3">
-        </div>
-
-        <div class="input-group">
-            <label>Liczba dni roboczych:</label>
-            <input type="number" placeholder="Zazwyczaj 22">
-        </div>
-
-        <div class="input-group">
-            <label>BEP dziennie (BEP / Dni):</label>
-            <input type="number" placeholder="Policz">
-        </div>
-
-        <div class="input-group">
-            <label>Liczba terapeutów:</label>
-            <input type="number" placeholder="Z danych podstawowych">
-        </div>
-
-        <div class="input-group" style="margin-top: 20px;">
-            <label style="color: #1e40af; font-size: 18px;">BEP na terapeutę dziennie:</label>
-            <input type="number" placeholder="Policz: BEP dziennie / Liczba terapeutów" style="border-color: #3b82f6; font-size: 18px; font-weight: 600;">
-        </div>
-
-        <!-- ANALIZA -->
-        <h2>Część 5: Twoja Analiza</h2>
-
-        <h3>Ile faktycznie robisz wizyt miesięcznie?</h3>
-
-        <div class="input-group">
-            <label>Rzeczywista liczba wizyt/miesiąc:</label>
-            <input type="number" placeholder="Sprawdź w systemie">
-        </div>
-
-        <div class="checkbox-group">
-            <label><strong>Czy jesteś powyżej BEP?</strong></label><br>
-            <label><input type="checkbox"> TAK</label>
-            <label><input type="checkbox"> NIE</label>
-        </div>
-
-        <div class="input-group">
-            <label>Jeśli TAK, o ile wizyt powyżej:</label>
-            <input type="number" placeholder="Rzeczywiste - BEP">
-        </div>
-
-        <div class="input-group">
-            <label>Jeśli NIE, o ile wizyt poniżej:</label>
-            <input type="number" placeholder="BEP - Rzeczywiste">
-        </div>
-
-        <h3>Jakie jest Twoje obłożenie kalendarzy?</h3>
-
-        <div class="input-group">
-            <label>Dostępne sloty miesięcznie (Terapeuci × 8h × Dni):</label>
-            <input type="number" placeholder="Policz">
-        </div>
-
-        <div class="input-group">
-            <label>Zrealizowane wizyty:</label>
-            <input type="number" placeholder="Rzeczywista liczba">
-        </div>
-
-        <div class="input-group">
-            <label>Obłożenie % (Wizyty / Sloty × 100%):</label>
-            <input type="number" placeholder="Policz">
-        </div>
-
-        <div class="checkbox-group">
-            <label><strong>Czy jesteś w celu 60-70%?</strong></label><br>
-            <label><input type="checkbox"> TAK (60-70%)</label>
-            <label><input type="checkbox"> NIE</label>
-        </div>
-
-        <!-- CO Z TEGO WYNIKA -->
-        <h2>Część 6: Co z Tego Wynika?</h2>
-
-        <div class="warning-box">
-            <strong>Wypełnij tę sekcję przed warsztatem LIVE</strong>
-        </div>
-
-        <h3>Jeśli jesteś PONIŻEJ BEP - co planujesz zrobić?</h3>
-
-        <div class="checkbox-group">
-            <label><input type="checkbox"> Zwiększyć marketing</label><br>
-            <label><input type="checkbox"> Reaktywacja starych pacjentów</label><br>
-            <label><input type="checkbox"> Wprowadzić pakiety</label><br>
-            <label><input type="checkbox"> Podnieść ceny</label><br>
-            <label><input type="checkbox"> Obciąć koszty</label>
-        </div>
-
-        <div class="input-group">
-            <label>Jakie koszty planujesz obciąć?</label>
-            <textarea placeholder="Opisz konkretnie..."></textarea>
-        </div>
-
-        <h3>Jeśli jesteś POWYŻEJ BEP - jaka jest Twoja marża?</h3>
-
-        <div class="input-group">
-            <label>Przychód miesięczny:</label>
-            <input type="number" placeholder="0">
-        </div>
-
-        <div class="input-group">
-            <label>Wszystkie koszty:</label>
-            <input type="number" placeholder="0">
-        </div>
-
-        <div class="input-group">
-            <label>Zysk (Przychód - Koszty):</label>
-            <input type="number" placeholder="Policz">
-        </div>
-
-        <div class="input-group">
-            <label>Marża % (Zysk / Przychód × 100%):</label>
-            <input type="number" placeholder="Policz">
-        </div>
-
-        <div class="checkbox-group">
-            <label><strong>Czy jesteś powyżej 15%?</strong></label><br>
-            <label><input type="checkbox"> TAK (powyżej 15%)</label>
-            <label><input type="checkbox"> NIE (poniżej 15%)</label>
-        </div>
-
-        <!-- WYSYŁKA -->
-        <div class="submit-box">
-            <h3>📤 Wyślij Ten Arkusz</h3>
-            <p style="margin: 10px 0;">
-                <strong>Przed warsztatem LIVE wyślij wypełniony arkusz na:</strong>
-            </p>
-            <p style="font-size: 18px; margin: 10px 0;">
-                📧 Email: <input type="text" placeholder="Adres email zostanie podany" style="width: 300px; display: inline-block;">
-            </p>
-            <p style="margin: 10px 0;">
-                <strong>lub</strong> prześlij przez platformę w sekcji "Zadania"
-            </p>
-            <p style="margin-top: 15px;">
-                <strong>Deadline:</strong> <input type="text" placeholder="Data zostanie podana" style="width: 200px; display: inline-block;">
-            </p>
-        </div>
-
-        <footer style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 14px;">
-            Arkusz BEP - Akademia Managera FizjoAcademy
-        </footer>
+  <!-- DANE UCZESTNIKA -->
+  <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:28px;">
+    <div style="flex:1; min-width:200px;">
+      <label style="display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:6px;">Imię i nazwisko</label>
+      <input type="text" id="uczestnik-imie" placeholder="np. Anna Kowalska" style="width:100%; border:none; border-bottom:2px solid var(--teal); outline:none; font-size:15px; padding:6px 4px; background:transparent; font-family:inherit; color:var(--text);">
     </div>
+    <div style="flex:1; min-width:200px;">
+      <label style="display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:6px;">Adres e-mail</label>
+      <input type="email" id="uczestnik-email" placeholder="np. anna@gabinet.pl" style="width:100%; border:none; border-bottom:2px solid var(--teal); outline:none; font-size:15px; padding:6px 4px; background:transparent; font-family:inherit; color:var(--text);">
+    </div>
+  </div>
+
+  <!-- UWAGA TECHNICZNA -->
+  <div class="callout callout-warn">
+    <strong>Zanim zaczniesz — ważna informacja techniczna:</strong><br><br>
+    Ten formularz zapisuje Twój postęp automatycznie w przeglądarce, z której korzystasz.
+    Możesz go zamknąć i wrócić później — dane będą czekać.<br><br>
+    <strong>Przez cały czas wypełniania używaj tego samego komputera i tej samej przeglądarki.</strong>
+    Jeśli otworzysz plik na innym urządzeniu lub w innej przeglądarce, zaczniesz od pustego formularza.
+  </div>
+
+  <!-- TWO-TRACK -->
+  <div class="two-track">
+    <div class="track-item track-owner">
+      <div class="track-label">Właściciel</div>
+      <div class="track-text">Skorzystaj z realnych danych z księgowości lub wyciągu bankowego. Im bardziej precyzyjne liczby, tym bardziej użyteczny wynik.</div>
+    </div>
+    <div class="track-item track-manager">
+      <div class="track-label">Manager</div>
+      <div class="track-text">Poproś właściciela o dane dotyczące kosztów i przychodów. Jeśli nie masz do nich dostępu — skorzystaj z przykładowych danych fikcyjnego gabinetu FizjoBalance. Zadanie i tak musi być wykonane.</div>
+    </div>
+  </div>
+
+  <!-- KROK 1 — STAŁE KOSZTY -->
+  <div class="krok">
+    <div class="krok-header">
+      <div class="krok-num">1</div>
+      <h2>Stałe koszty miesięczne</h2>
+    </div>
+    <p>Wypisz wszystkie koszty, które ponosisz co miesiąc <strong>niezależnie od liczby przyjętych pacjentów.</strong> Czynsz, wynagrodzenia, ZUS, leasing, abonament systemu, marketing — wszystko co leci bez względu na grafik.</p>
+
+    <div class="tabela-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kategoria kosztu</th>
+            <th>Opis / uwagi (opcjonalnie)</th>
+            <th style="text-align:right;">Kwota miesięcznie (zł)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody-stale">
+          <tr>
+            <td class="td-label">Czynsz / najem lokalu</td>
+            <td class="td-input-text"><input type="text" placeholder=""></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-label">Wynagrodzenia / etaty (brutto)</td>
+            <td class="td-input-text"><input type="text" placeholder=""></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-label">ZUS pracodawcy</td>
+            <td class="td-input-text"><input type="text" placeholder=""></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-label">Leasing sprzętu / raty</td>
+            <td class="td-input-text"><input type="text" placeholder=""></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-label">Marketing / reklama</td>
+            <td class="td-input-text"><input type="text" placeholder=""></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-label">Systemy / oprogramowanie</td>
+            <td class="td-input-text"><input type="text" placeholder="np. system do rejestracji, księgowość"></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-label">Media (prąd, internet, telefon)</td>
+            <td class="td-input-text"><input type="text" placeholder=""></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-label">Inne koszty stałe</td>
+            <td class="td-input-text"><input type="text" placeholder="np. ubezpieczenie, księgowość, serwis"></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="suma-row">
+            <td class="td-label" style="padding:9px 14px;font-weight:700;font-size:14px;color:var(--teal-dark);">SUMA KOSZTÓW STAŁYCH</td>
+            <td></td>
+            <td class="suma-val" id="suma-stale">0 zł</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <button class="btn-add-row" onclick="dodajWierszStaly()">+ Dodaj pozycję</button>
+    <p class="note">Jeśli prowadzisz JDG i pracujesz sam/a — uwzględnij też swój własny ZUS oraz wynagrodzenie, które chcesz sobie wypłacić.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- KROK 2 — ZMIENNE KOSZTY NA WIZYTĘ -->
+  <div class="krok">
+    <div class="krok-header">
+      <div class="krok-num">2</div>
+      <h2>Zmienne koszty na wizytę</h2>
+    </div>
+    <p>Koszty, które ponosisz <strong>przy każdej wizycie</strong> — materiały, prowizje terapeutów na kontrakcie, jednorazówki itp. Jeśli nie ma żadnych — wpisz 0.</p>
+
+    <div class="tabela-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kategoria</th>
+            <th>Opis</th>
+            <th style="text-align:right;">Kwota / wizyta (zł)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody-zmienne">
+          <tr>
+            <td class="td-label">Materiały / środki jednorazowe</td>
+            <td class="td-input-text"><input type="text" placeholder="np. rękawiczki, żele, plastry"></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-zmienny" oninput="przelicz()"></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-label">Prowizja terapeuty (kontrakt)</td>
+            <td class="td-input-text"><input type="text" placeholder="np. % od wizyty dla terapeuty B2B"></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-zmienny" oninput="przelicz()"></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-label">Inne koszty zmienne</td>
+            <td class="td-input-text"><input type="text" placeholder=""></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-zmienny" oninput="przelicz()"></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="suma-row">
+            <td class="td-label" style="padding:9px 14px;font-weight:700;font-size:14px;color:var(--teal-dark);">SUMA ZMIENNYCH / WIZYTĘ</td>
+            <td></td>
+            <td class="suma-val" id="suma-zmienne">0 zł</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <button class="btn-add-row" onclick="dodajWierszZmienny()">+ Dodaj pozycję</button>
+  </div>
+
+  <hr class="divider">
+
+  <!-- KROK 3 — OBLICZ BEP -->
+  <div class="krok">
+    <div class="krok-header">
+      <div class="krok-num">3</div>
+      <h2>Oblicz BEP</h2>
+    </div>
+    <p>Podaj średnią cenę jednej wizyty w Twoim gabinecie. BEP wyliczy się automatycznie.</p>
+
+    <div class="field-row">
+      <label>Średnia cena wizyty:</label>
+      <input type="number" min="0" id="cena-wizyty" placeholder="np. 150" oninput="przelicz()">
+      <span class="unit">zł</span>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Formuła BEP</div>
+      <div class="formula-line">
+        BEP = Koszty stałe &divide; (Cena wizyty &minus; Zmienne koszty na wizytę)
+      </div>
+      <div class="formula-line" style="margin-top:8px; font-size:13px; color:var(--muted);">
+        BEP = <span id="f-stale" style="color:var(--teal-dark);font-weight:600;">—</span>
+        &divide; (<span id="f-cena" style="color:var(--teal-dark);font-weight:600;">—</span>
+        &minus; <span id="f-zmienne" style="color:var(--teal-dark);font-weight:600;">—</span>)
+      </div>
+      <div class="formula-result">
+        <div class="formula-result-label">Twój BEP:</div>
+        <div class="formula-result-val" id="bep-wynik">—</div>
+        <div class="formula-result-unit" id="bep-unit"></div>
+      </div>
+    </div>
+    <p class="note">BEP to minimalna liczba wizyt miesięcznie, po której gabinet wychodzi na zero — nie zarabia jeszcze, ale już nie dokłada.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- KROK 4 — PORÓWNAJ -->
+  <div class="krok">
+    <div class="krok-header">
+      <div class="krok-num">4</div>
+      <h2>Porównaj z aktualną liczbą wizyt</h2>
+    </div>
+    <p>Ile wizyt miesięcznie faktycznie przyjmuje Twój gabinet? (średnia z ostatnich 2–3 miesięcy)</p>
+
+    <div class="field-row">
+      <label>Aktualna liczba wizyt miesięcznie:</label>
+      <input type="number" min="0" id="wizyty-aktualne" placeholder="np. 200" oninput="przelicz()">
+      <span class="unit">wizyt/mies</span>
+    </div>
+
+    <div class="porownanie-box neutral" id="porownanie-box">
+      <div class="porownanie-label">Wynik</div>
+      <div class="porownanie-wynik" id="porownanie-wynik">Uzupełnij dane powyżej, aby zobaczyć wynik.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- KROK 5 — WNIOSEK -->
+  <div class="krok">
+    <div class="krok-header">
+      <div class="krok-num">5</div>
+      <h2>Napisz jedno zdanie wniosku</h2>
+    </div>
+    <p>To jest obowiązkowa część zadania. Bez odpowiedzi na to pytanie zadanie <strong>nie jest zaliczone.</strong></p>
+
+    <div class="pytanie-box">
+      Co oznacza Twój BEP dla Twojego biznesu — i co z tego wynika?<br>
+      <small style="font-size:13px;opacity:0.75;">(Nie: "Mój BEP to 53 wizyty." Tak: "Mój BEP to 53 wizyty, co oznacza że jestem powyżej progu o 12 wizyt — każda kolejna wizyta to czysty zysk. Największą dźwignię daje mi podniesienie ceny wizyty, bo o każde 10 zł mój BEP spada o X wizyt.")</small>
+    </div>
+
+    <div class="odpowiedz-label">Mój wniosek:</div>
+    <textarea id="wniosek" placeholder="Wpisz swój wniosek tutaj..."></textarea>
+  </div>
+
+  <hr class="divider">
+
+  <!-- POBIERZ -->
+  <div class="pobierz-section">
+    <button class="btn-pobierz" onclick="pobierzFormularz()">&#8659; Pobierz wypełniony formularz</button>
+    <div class="pobierz-info">
+      Kliknij, gdy skończysz wypełniać.<br>
+      Pobierzesz gotowy plik do wysłania przez formularz na Discordzie.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- JAK ODDAĆ -->
+  <div class="oddanie">
+    <h2>Jak oddać zadanie</h2>
+    <p>Pobierz wypełniony formularz przyciskiem powyżej, a następnie prześlij go przez formularz udostępniony na Discordzie na kanale <span class="discord">#zadanie_domowe</span></p>
+    <p style="margin-top:14px"><strong>Kryterium zaliczenia:</strong> arkusz z wypełnionymi danymi i obliczonym BEP + zdanie wniosku (interpretacja, nie opis obliczeń).<br>
+    Nie ma "prawie" ani "zacząłem/am". Zaliczone albo niezaliczone.</p>
+    <p style="margin-top:10px"><strong>Feedback od Marcina</strong> otrzymasz do czwartku 23.04.2026, godz. 23:59.</p>
+  </div>
+
+</div>
+
+<script>
+  // ── PRZELICZANIE ────────────────────────────────────────────────────────
+
+  function sumaKategorii(cls) {
+    let suma = 0;
+    document.querySelectorAll(`.${cls}`).forEach(el => {
+      suma += parseFloat(el.value) || 0;
+    });
+    return suma;
+  }
+
+  function przelicz() {
+    const stale   = sumaKategorii('koszt-staly');
+    const zmienne = sumaKategorii('koszt-zmienny');
+    const cena    = parseFloat(document.getElementById('cena-wizyty').value) || 0;
+    const aktualne = parseFloat(document.getElementById('wizyty-aktualne').value) || null;
+
+    // sumy w tabelach
+    document.getElementById('suma-stale').textContent   = formatKwota(stale);
+    document.getElementById('suma-zmienne').textContent = formatKwota(zmienne);
+
+    // formula display
+    document.getElementById('f-stale').textContent   = stale   ? formatKwota(stale)   : '—';
+    document.getElementById('f-cena').textContent     = cena    ? formatKwota(cena)    : '—';
+    document.getElementById('f-zmienne').textContent  = zmienne ? formatKwota(zmienne) : '—';
+
+    // BEP
+    const margin = cena - zmienne;
+    const bepEl  = document.getElementById('bep-wynik');
+    const unitEl = document.getElementById('bep-unit');
+
+    if (stale > 0 && margin > 0) {
+      const bep = Math.ceil(stale / margin);
+      bepEl.textContent = bep;
+      unitEl.textContent = 'wizyt / miesiąc';
+      bepEl.style.color = 'var(--teal-dark)';
+
+      // porównanie
+      if (aktualne !== null) {
+        const box = document.getElementById('porownanie-box');
+        const wynik = document.getElementById('porownanie-wynik');
+        const roznica = aktualne - bep;
+
+        if (roznica > 0) {
+          box.className = 'porownanie-box ok';
+          wynik.innerHTML = `<strong>Powyżej progu o ${roznica} wizyt.</strong><br>
+            Gabinet pokrywa koszty stałe i generuje zysk. Każda kolejna wizyta powyżej BEP to czysty zysk = ${formatKwota(margin)} zł marży jednostkowej.`;
+        } else if (roznica === 0) {
+          box.className = 'porownanie-box neutral';
+          wynik.innerHTML = `<strong>Dokładnie na progu rentowności.</strong><br>
+            Gabinet wychodzi na zero — koszty stałe są pokryte, ale nie ma jeszcze zysku.`;
+        } else {
+          box.className = 'porownanie-box bad';
+          wynik.innerHTML = `<strong>Poniżej progu o ${Math.abs(roznica)} wizyt.</strong><br>
+            Gabinet dokłada do interesu. Żeby wyjść na zero, potrzebujesz jeszcze ${Math.abs(roznica)} wizyt miesięcznie lub obniżenia kosztów stałych o ${formatKwota(Math.abs(roznica) * margin)} zł.`;
+        }
+      }
+    } else {
+      bepEl.textContent = '—';
+      unitEl.textContent = '';
+      if (margin <= 0 && cena > 0) {
+        bepEl.textContent = '⚠';
+        bepEl.style.color = '#c0392b';
+        unitEl.textContent = 'Zmienne koszty ≥ cenie wizyty — sprawdź dane.';
+      }
+    }
+
+    zapiszStan();
+  }
+
+  function formatKwota(n) {
+    return n.toLocaleString('pl-PL', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' zł';
+  }
+
+  // ── WIERSZE TABEL ───────────────────────────────────────────────────────
+
+  function nowyWiersz(labelPlaceholder, notePlaceholder, cls) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="td-label"><input type="text" placeholder="${labelPlaceholder}" style="width:100%;border:none;border-bottom:1px solid var(--teal-mid);outline:none;font-size:13.5px;padding:6px 0;background:transparent;font-family:inherit;"></td>
+      <td class="td-input-text"><input type="text" placeholder="${notePlaceholder}"></td>
+      <td class="td-kwota"><input type="number" min="0" placeholder="0" class="${cls}" oninput="przelicz()"></td>
+      <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+    `;
+    return tr;
+  }
+
+  function dodajWierszStaly() {
+    document.getElementById('tbody-stale').appendChild(
+      nowyWiersz('Nazwa kosztu', '', 'koszt-staly')
+    );
+  }
+
+  function dodajWierszZmienny() {
+    document.getElementById('tbody-zmienne').appendChild(
+      nowyWiersz('Nazwa kosztu', '', 'koszt-zmienny')
+    );
+  }
+
+  function usunWiersz(btn) {
+    btn.closest('tr').remove();
+    przelicz();
+  }
+
+  // ── AUTOSAVE ────────────────────────────────────────────────────────────
+
+  const LS_KEY = 'w2_bep';
+
+  function zapiszStan() {
+    const stan = {
+      imie:      document.getElementById('uczestnik-imie').value,
+      email:     document.getElementById('uczestnik-email').value,
+      cena:      document.getElementById('cena-wizyty').value,
+      aktualne:  document.getElementById('wizyty-aktualne').value,
+      wniosek:   document.getElementById('wniosek').value,
+      stale:     [],
+      zmienne:   []
+    };
+
+    document.querySelectorAll('#tbody-stale tr').forEach(tr => {
+      const inputs = tr.querySelectorAll('input');
+      stan.stale.push({ label: inputs[0].value, note: inputs[1].value, kwota: inputs[2].value });
+    });
+
+    document.querySelectorAll('#tbody-zmienne tr').forEach(tr => {
+      const inputs = tr.querySelectorAll('input');
+      stan.zmienne.push({ label: inputs[0].value, note: inputs[1].value, kwota: inputs[2].value });
+    });
+
+    localStorage.setItem(LS_KEY, JSON.stringify(stan));
+
+    const st = document.getElementById('as-status');
+    if (st) {
+      const t = new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+      st.textContent = `Ostatni zapis: ${t}`;
+    }
+  }
+
+  function wczytajStan() {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    try {
+      const stan = JSON.parse(raw);
+
+      if (stan.imie)     document.getElementById('uczestnik-imie').value   = stan.imie;
+      if (stan.email)    document.getElementById('uczestnik-email').value  = stan.email;
+      if (stan.cena)     document.getElementById('cena-wizyty').value      = stan.cena;
+      if (stan.aktualne) document.getElementById('wizyty-aktualne').value  = stan.aktualne;
+      if (stan.wniosek)  document.getElementById('wniosek').value          = stan.wniosek;
+
+      // Przywróć stałe — pierwsze 8 wierszy to predefiniowane, nadpisz wartości
+      const tbStale = document.getElementById('tbody-stale');
+      if (stan.stale && stan.stale.length) {
+        const wiersze = tbStale.querySelectorAll('tr');
+        stan.stale.forEach((d, i) => {
+          if (i < wiersze.length) {
+            const inputs = wiersze[i].querySelectorAll('input');
+            if (inputs[0]) inputs[0].value = d.label;
+            if (inputs[1]) inputs[1].value = d.note;
+            if (inputs[2]) inputs[2].value = d.kwota;
+          } else {
+            const tr = nowyWiersz('', '', 'koszt-staly');
+            tbStale.appendChild(tr);
+            const inputs = tr.querySelectorAll('input');
+            inputs[0].value = d.label;
+            inputs[1].value = d.note;
+            inputs[2].value = d.kwota;
+          }
+        });
+      }
+
+      // Przywróć zmienne
+      const tbZm = document.getElementById('tbody-zmienne');
+      if (stan.zmienne && stan.zmienne.length) {
+        const wiersze = tbZm.querySelectorAll('tr');
+        stan.zmienne.forEach((d, i) => {
+          if (i < wiersze.length) {
+            const inputs = wiersze[i].querySelectorAll('input');
+            if (inputs[0]) inputs[0].value = d.label;
+            if (inputs[1]) inputs[1].value = d.note;
+            if (inputs[2]) inputs[2].value = d.kwota;
+          } else {
+            const tr = nowyWiersz('', '', 'koszt-zmienny');
+            tbZm.appendChild(tr);
+            const inputs = tr.querySelectorAll('input');
+            inputs[0].value = d.label;
+            inputs[1].value = d.note;
+            inputs[2].value = d.kwota;
+          }
+        });
+      }
+
+      przelicz();
+    } catch(e) {}
+  }
+
+  document.addEventListener('input', zapiszStan);
+  setInterval(zapiszStan, 10000);
+
+  // ── POBIERZ ─────────────────────────────────────────────────────────────
+
+  function pobierzFormularz() {
+    zapiszStan();
+    const klon = document.documentElement.cloneNode(true);
+    const inputsOryg = document.querySelectorAll('input, select, textarea');
+    const inputsKlon = klon.querySelectorAll('input, select, textarea');
+    inputsOryg.forEach((el, i) => {
+      const kl = inputsKlon[i];
+      if (!kl) return;
+      if (el.tagName === 'TEXTAREA') {
+        kl.textContent = el.value;
+      } else {
+        kl.setAttribute('value', el.value);
+      }
+    });
+    klon.querySelectorAll('.pobierz-section').forEach(el => el.remove());
+    const html = '<!DOCTYPE html>\n' + klon.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+
+    // iOS Safari nie obsługuje a.download — otwieramy w nowej karcie
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      alert('Twój formularz otworzył się w nowej karcie.\n\nJak go zapisać na iPhone:\n1. Naciśnij ikonę udostępniania (prostokąt ze strzałką ↑) na dole ekranu\n2. Wybierz „Zapisz na urządzeniu" lub „Pliki"\n3. Gotowe — wyślij ten plik przez formularz na Discordzie.');
+      return;
+    }
+
+    const a = document.createElement('a');
+    a.href     = url;
+    a.download = 'W2_bep_wypelniony.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Init
+  wczytajStan();
+</script>
+
 </body>
 </html>
