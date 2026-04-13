@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karta Pracy - Mentalność Pieniądza</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #111111;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            border-bottom: 3px solid #111111;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0 10px 0;
+        }
+
+        .instruction {
+            font-size: 18px;
+            font-weight: 700;
+            color: #c15c5c;
+            margin: 0;
+        }
+
+        .question-block {
+            margin-bottom: 50px;
+            page-break-inside: avoid; /* Zapobiega łamaniu pytania na dwie strony w PDF */
+        }
+
+        .question-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #111111;
+        }
+
+        .question-text {
+            font-size: 16px;
+            color: #444444;
+            font-style: italic;
+            margin-bottom: 25px;
+        }
+
+        /* Linie do pisania dla wersji PDF/Druk */
+        .lines {
+            width: 100%;
+        }
+
+        .line {
+            border-bottom: 1px dotted #cccccc;
+            height: 35px;
+            width: 100%;
+        }
+
+        /* Ustawienia specjalnie pod generowanie PDF (Ctrl+P) */
+        @media print {
+            body {
+                padding: 0;
+            }
+            .container {
+                max-width: 100%;
+            }
+            @page {
+                margin: 2cm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <h1>Karta Pracy: Mentalność Pieniądza</h1>
+            <p class="instruction">Odpowiedz całkowicie szczerze na te pytania i przemyśl je przed naszym spotkaniem LIVE 7 kwietnia.</p>
+        </div>
+
+        <div class="question-block">
+            <div class="question-title">Pytanie 1: Zysk a pomaganie pacjentom</div>
+            <div class="question-text">
+                Jak czujesz się mentalnie, gdy musisz otwarcie rozmawiać z pacjentem o cenach za swoje usługi? Czy przy proponowaniu i umawianiu kolejnej wizyty blokuje Cię wewnętrzna myśl, że „pacjenta pewnie na to nie stać"? Jakie myśli i emocje pojawiają się w Twojej głowie w samym momencie pobierania opłaty za wykonaną pracę?
+            </div>
+            <div class="lines">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-title">Pytanie 2: Cash flow i pułapka "wszystko jest kosztem"</div>
+            <div class="question-text">
+                Jakie emocje towarzyszą Ci, gdy musisz zapłacić za coś, co usprawnia działanie biznesu (np. wynagrodzenie asystentki, marketing, lepszy system do rezerwacji)? Czy automatycznie przypinasz do tego łatkę „kolejnego przykrego kosztu i straty pieniędzy", czy potrafisz już spojrzeć na to jako na narzędzie, które dosłownie kupuje Ci Twój własny czas i przyszły przychód?
+            </div>
+            <div class="lines">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-title">Pytanie 3: Wycena własnej wartości i strach przed rynkiem</div>
+            <div class="question-text">
+                Gdybyś od jutra musiał podnieść ceny wszystkich usług w swoim gabinecie o 30%, jaka jest Twoja pierwsza, instynktowna reakcja? Oblewa Cię strach i myślisz „wszyscy pacjenci na pewno odejdą", czy czujesz ulgę, że w końcu Twoja praca, doświadczenie i struktura firmy są wyceniane adekwatnie do wartości, którą realnie dajesz?
+            </div>
+            <div class="lines">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

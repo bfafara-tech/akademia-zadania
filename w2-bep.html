@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arkusz BEP - Próg Rentowności | Akademia Managera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header {
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #1e40af;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .meta {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        h2 {
+            color: #1e40af;
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        h3 {
+            color: #374151;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #d1d5db;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .total-row {
+            background: #f9fafb;
+            font-weight: 600;
+        }
+
+        .formula-box {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .checkbox-group {
+            margin: 10px 0;
+        }
+
+        .checkbox-group label {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 20px;
+            font-weight: normal;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 16px;
+            font-family: inherit;
+            min-height: 80px;
+        }
+
+        .submit-box {
+            background: #f0fdf4;
+            border: 2px solid #10b981;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .submit-box h3 {
+            color: #065f46;
+            margin-top: 0;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+
+            input, textarea {
+                border: none;
+                border-bottom: 1px solid #000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ARKUSZ BEP - Próg Rentowności Twojej Placówki</h1>
+            <div class="meta">
+                <strong>Akademia Managera</strong> | Tydzień 1 - Dashboard 6 Liczb
+            </div>
+        </header>
+
+        <div class="info-box">
+            <strong>Instrukcja:</strong>
+            <ol style="margin: 10px 0 0 20px;">
+                <li>Zbierz dane ze swojej księgowości (koszty miesięczne)</li>
+                <li>Wypełnij poniższy arkusz</li>
+                <li>Policz BEP według wzoru</li>
+                <li>Wyślij wypełniony arkusz przed warsztatem LIVE</li>
+            </ol>
+        </div>
+
+        <!-- DANE PODSTAWOWE -->
+        <h2>Twoje Dane</h2>
+
+        <div class="input-group">
+            <label>Nazwa placówki:</label>
+            <input type="text" placeholder="Np. Gabinet Fizjoterapii Zdrowie">
+        </div>
+
+        <div class="input-group">
+            <label>Liczba terapeutów:</label>
+            <input type="number" placeholder="Np. 4">
+        </div>
+
+        <div class="input-group">
+            <label>Liczba dni roboczych/miesiąc:</label>
+            <input type="number" placeholder="Zazwyczaj 22">
+        </div>
+
+        <div class="input-group">
+            <label>Data wypełnienia:</label>
+            <input type="text" placeholder="DD.MM.RRRR">
+        </div>
+
+        <!-- KOSZTY STAŁE -->
+        <h2>Część 1: Koszty Stałe Miesięczne</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Pozycja</th>
+                    <th style="width: 200px;">Kwota (zł)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Wynagrodzenia (brutto + ZUS)</strong></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Terapeuci</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Recepcja</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Inne (sprzątanie, księgowa)</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td><strong>Czynsz</strong></td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td><strong>Media</strong></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Prąd</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Woda</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Internet, telefon</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td><strong>Marketing</strong></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Reklamy (Meta, Google)</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Strona www</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Inne</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td><strong>Systemy i oprogramowanie</strong></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">System do wizyt</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Inne subskrypcje</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td><strong>Księgowość</strong></td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td><strong>Ubezpieczenia</strong></td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td><strong>Inne koszty stałe</strong></td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>RAZEM KOSZTY STAŁE:</strong></td>
+                    <td><input type="number" placeholder="Policz sumę" style="font-weight: 600;"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- CENA I KOSZT ZMIENNY -->
+        <h2>Część 2: Cena i Koszt Zmienny</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Pozycja</th>
+                    <th style="width: 200px;">Kwota (zł)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Średnia cena wizyty</strong></td>
+                    <td><input type="number" placeholder="Np. 180"></td>
+                </tr>
+                <tr>
+                    <td><strong>Koszt zmienny 1 wizyty</strong></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Materiały (żele, taśmy)</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Pranie ręczników</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 30px;">Inne</td>
+                    <td><input type="number" placeholder="0"></td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>RAZEM KOSZT ZMIENNY:</strong></td>
+                    <td><input type="number" placeholder="Policz sumę" style="font-weight: 600;"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- OBLICZENIE BEP -->
+        <h2>Część 3: Obliczenie BEP</h2>
+
+        <div class="formula-box">
+            BEP = Koszty Stałe / (Cena Wizyty - Koszt Zmienny)
+        </div>
+
+        <div class="input-group">
+            <label>Koszty Stałe (z części 1):</label>
+            <input type="number" placeholder="0">
+        </div>
+
+        <div class="input-group">
+            <label>Cena Wizyty:</label>
+            <input type="number" placeholder="0">
+        </div>
+
+        <div class="input-group">
+            <label>Koszt Zmienny (z części 2):</label>
+            <input type="number" placeholder="0">
+        </div>
+
+        <div class="input-group">
+            <label>Różnica (Cena - Koszt Zmienny):</label>
+            <input type="number" placeholder="Policz: Cena - Koszt Zmienny">
+        </div>
+
+        <div class="input-group" style="margin-top: 20px;">
+            <label style="color: #1e40af; font-size: 18px;">BEP (wizyt miesięcznie):</label>
+            <input type="number" placeholder="Policz: Koszty Stałe / Różnica" style="border-color: #3b82f6; font-size: 18px; font-weight: 600;">
+        </div>
+
+        <!-- PRZELICZENIE -->
+        <h2>Część 4: Przeliczenie na Dzień i Terapeutę</h2>
+
+        <div class="input-group">
+            <label>BEP wizyt miesięcznie:</label>
+            <input type="number" placeholder="Z części 3">
+        </div>
+
+        <div class="input-group">
+            <label>Liczba dni roboczych:</label>
+            <input type="number" placeholder="Zazwyczaj 22">
+        </div>
+
+        <div class="input-group">
+            <label>BEP dziennie (BEP / Dni):</label>
+            <input type="number" placeholder="Policz">
+        </div>
+
+        <div class="input-group">
+            <label>Liczba terapeutów:</label>
+            <input type="number" placeholder="Z danych podstawowych">
+        </div>
+
+        <div class="input-group" style="margin-top: 20px;">
+            <label style="color: #1e40af; font-size: 18px;">BEP na terapeutę dziennie:</label>
+            <input type="number" placeholder="Policz: BEP dziennie / Liczba terapeutów" style="border-color: #3b82f6; font-size: 18px; font-weight: 600;">
+        </div>
+
+        <!-- ANALIZA -->
+        <h2>Część 5: Twoja Analiza</h2>
+
+        <h3>Ile faktycznie robisz wizyt miesięcznie?</h3>
+
+        <div class="input-group">
+            <label>Rzeczywista liczba wizyt/miesiąc:</label>
+            <input type="number" placeholder="Sprawdź w systemie">
+        </div>
+
+        <div class="checkbox-group">
+            <label><strong>Czy jesteś powyżej BEP?</strong></label><br>
+            <label><input type="checkbox"> TAK</label>
+            <label><input type="checkbox"> NIE</label>
+        </div>
+
+        <div class="input-group">
+            <label>Jeśli TAK, o ile wizyt powyżej:</label>
+            <input type="number" placeholder="Rzeczywiste - BEP">
+        </div>
+
+        <div class="input-group">
+            <label>Jeśli NIE, o ile wizyt poniżej:</label>
+            <input type="number" placeholder="BEP - Rzeczywiste">
+        </div>
+
+        <h3>Jakie jest Twoje obłożenie kalendarzy?</h3>
+
+        <div class="input-group">
+            <label>Dostępne sloty miesięcznie (Terapeuci × 8h × Dni):</label>
+            <input type="number" placeholder="Policz">
+        </div>
+
+        <div class="input-group">
+            <label>Zrealizowane wizyty:</label>
+            <input type="number" placeholder="Rzeczywista liczba">
+        </div>
+
+        <div class="input-group">
+            <label>Obłożenie % (Wizyty / Sloty × 100%):</label>
+            <input type="number" placeholder="Policz">
+        </div>
+
+        <div class="checkbox-group">
+            <label><strong>Czy jesteś w celu 60-70%?</strong></label><br>
+            <label><input type="checkbox"> TAK (60-70%)</label>
+            <label><input type="checkbox"> NIE</label>
+        </div>
+
+        <!-- CO Z TEGO WYNIKA -->
+        <h2>Część 6: Co z Tego Wynika?</h2>
+
+        <div class="warning-box">
+            <strong>Wypełnij tę sekcję przed warsztatem LIVE</strong>
+        </div>
+
+        <h3>Jeśli jesteś PONIŻEJ BEP - co planujesz zrobić?</h3>
+
+        <div class="checkbox-group">
+            <label><input type="checkbox"> Zwiększyć marketing</label><br>
+            <label><input type="checkbox"> Reaktywacja starych pacjentów</label><br>
+            <label><input type="checkbox"> Wprowadzić pakiety</label><br>
+            <label><input type="checkbox"> Podnieść ceny</label><br>
+            <label><input type="checkbox"> Obciąć koszty</label>
+        </div>
+
+        <div class="input-group">
+            <label>Jakie koszty planujesz obciąć?</label>
+            <textarea placeholder="Opisz konkretnie..."></textarea>
+        </div>
+
+        <h3>Jeśli jesteś POWYŻEJ BEP - jaka jest Twoja marża?</h3>
+
+        <div class="input-group">
+            <label>Przychód miesięczny:</label>
+            <input type="number" placeholder="0">
+        </div>
+
+        <div class="input-group">
+            <label>Wszystkie koszty:</label>
+            <input type="number" placeholder="0">
+        </div>
+
+        <div class="input-group">
+            <label>Zysk (Przychód - Koszty):</label>
+            <input type="number" placeholder="Policz">
+        </div>
+
+        <div class="input-group">
+            <label>Marża % (Zysk / Przychód × 100%):</label>
+            <input type="number" placeholder="Policz">
+        </div>
+
+        <div class="checkbox-group">
+            <label><strong>Czy jesteś powyżej 15%?</strong></label><br>
+            <label><input type="checkbox"> TAK (powyżej 15%)</label>
+            <label><input type="checkbox"> NIE (poniżej 15%)</label>
+        </div>
+
+        <!-- WYSYŁKA -->
+        <div class="submit-box">
+            <h3>📤 Wyślij Ten Arkusz</h3>
+            <p style="margin: 10px 0;">
+                <strong>Przed warsztatem LIVE wyślij wypełniony arkusz na:</strong>
+            </p>
+            <p style="font-size: 18px; margin: 10px 0;">
+                📧 Email: <input type="text" placeholder="Adres email zostanie podany" style="width: 300px; display: inline-block;">
+            </p>
+            <p style="margin: 10px 0;">
+                <strong>lub</strong> prześlij przez platformę w sekcji "Zadania"
+            </p>
+            <p style="margin-top: 15px;">
+                <strong>Deadline:</strong> <input type="text" placeholder="Data zostanie podana" style="width: 200px; display: inline-block;">
+            </p>
+        </div>
+
+        <footer style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 14px;">
+            Arkusz BEP - Akademia Managera FizjoAcademy
+        </footer>
+    </div>
+</body>
+</html>
