@@ -409,7 +409,7 @@
 
   <!-- POBIERZ -->
   <div class="pobierz-section">
-    <button class="btn-pobierz" onclick="pobierzFormularz()">&#8659; Pobierz wypełniony formularz</button>
+    <button class="btn-pobierz">&#8659; Pobierz wypełniony formularz</button>
     <div class="pobierz-info">
       Kliknij, gdy skończysz wypełniać.<br>
       Pobierzesz gotowy plik do wysłania przez formularz na Discordzie.
@@ -669,6 +669,16 @@
 
   // Init
   wczytajStan();
+
+  // Event listener dla przycisku pobierz (zamiast inline onclick)
+  document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.querySelector('.btn-pobierz');
+    if (btn) {
+      btn.addEventListener('click', function() {
+        pobierzFormularz();
+      });
+    }
+  });
 </script>
 
 </body>
