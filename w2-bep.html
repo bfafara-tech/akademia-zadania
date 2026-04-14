@@ -216,50 +216,50 @@
           <tr>
             <td class="td-label">Czynsz / najem lokalu</td>
             <td class="td-input-text"><input type="text" placeholder=""></td>
-            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
-            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly"></td>
+            <td class="td-del"><button class="btn-del">×</button></td>
           </tr>
           <tr>
             <td class="td-label">Wynagrodzenia / etaty (brutto)</td>
             <td class="td-input-text"><input type="text" placeholder=""></td>
-            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
-            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly"></td>
+            <td class="td-del"><button class="btn-del">×</button></td>
           </tr>
           <tr>
             <td class="td-label">ZUS pracodawcy</td>
             <td class="td-input-text"><input type="text" placeholder=""></td>
-            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
-            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly"></td>
+            <td class="td-del"><button class="btn-del">×</button></td>
           </tr>
           <tr>
             <td class="td-label">Leasing sprzętu / raty</td>
             <td class="td-input-text"><input type="text" placeholder=""></td>
-            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
-            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly"></td>
+            <td class="td-del"><button class="btn-del">×</button></td>
           </tr>
           <tr>
             <td class="td-label">Marketing / reklama</td>
             <td class="td-input-text"><input type="text" placeholder=""></td>
-            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
-            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly"></td>
+            <td class="td-del"><button class="btn-del">×</button></td>
           </tr>
           <tr>
             <td class="td-label">Systemy / oprogramowanie</td>
             <td class="td-input-text"><input type="text" placeholder="np. system do rejestracji, księgowość"></td>
-            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
-            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly"></td>
+            <td class="td-del"><button class="btn-del">×</button></td>
           </tr>
           <tr>
             <td class="td-label">Media (prąd, internet, telefon)</td>
             <td class="td-input-text"><input type="text" placeholder=""></td>
-            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
-            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly"></td>
+            <td class="td-del"><button class="btn-del">×</button></td>
           </tr>
           <tr>
             <td class="td-label">Inne koszty stałe</td>
             <td class="td-input-text"><input type="text" placeholder="np. ubezpieczenie, księgowość, serwis"></td>
-            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly" oninput="przelicz()"></td>
-            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-staly"></td>
+            <td class="td-del"><button class="btn-del">×</button></td>
           </tr>
         </tbody>
         <tfoot>
@@ -272,7 +272,7 @@
         </tfoot>
       </table>
     </div>
-    <button class="btn-add-row" onclick="dodajWierszStaly()">+ Dodaj pozycję</button>
+    <button class="btn-add-row" id="btn-add-staly">+ Dodaj pozycję</button>
     <p class="note">Jeśli prowadzisz JDG i pracujesz sam/a — uwzględnij też swój własny ZUS oraz wynagrodzenie, które chcesz sobie wypłacić.</p>
   </div>
 
@@ -300,20 +300,20 @@
           <tr>
             <td class="td-label">Materiały / środki jednorazowe</td>
             <td class="td-input-text"><input type="text" placeholder="np. rękawiczki, żele, plastry"></td>
-            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-zmienny" oninput="przelicz()"></td>
-            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-zmienny"></td>
+            <td class="td-del"><button class="btn-del">×</button></td>
           </tr>
           <tr>
             <td class="td-label">Prowizja terapeuty (kontrakt)</td>
             <td class="td-input-text"><input type="text" placeholder="np. % od wizyty dla terapeuty B2B"></td>
-            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-zmienny" oninput="przelicz()"></td>
-            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-zmienny"></td>
+            <td class="td-del"><button class="btn-del">×</button></td>
           </tr>
           <tr>
             <td class="td-label">Inne koszty zmienne</td>
             <td class="td-input-text"><input type="text" placeholder=""></td>
-            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-zmienny" oninput="przelicz()"></td>
-            <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+            <td class="td-kwota"><input type="number" min="0" placeholder="0" class="koszt-zmienny"></td>
+            <td class="td-del"><button class="btn-del">×</button></td>
           </tr>
         </tbody>
         <tfoot>
@@ -326,7 +326,7 @@
         </tfoot>
       </table>
     </div>
-    <button class="btn-add-row" onclick="dodajWierszZmienny()">+ Dodaj pozycję</button>
+    <button class="btn-add-row" id="btn-add-zmienny">+ Dodaj pozycję</button>
   </div>
 
   <hr class="divider">
@@ -341,7 +341,7 @@
 
     <div class="field-row">
       <label>Średnia cena wizyty:</label>
-      <input type="number" min="0" id="cena-wizyty" placeholder="np. 150" oninput="przelicz()">
+      <input type="number" min="0" id="cena-wizyty" placeholder="np. 150">
       <span class="unit">zł</span>
     </div>
 
@@ -376,7 +376,7 @@
 
     <div class="field-row">
       <label>Aktualna liczba wizyt miesięcznie:</label>
-      <input type="number" min="0" id="wizyty-aktualne" placeholder="np. 200" oninput="przelicz()">
+      <input type="number" min="0" id="wizyty-aktualne" placeholder="np. 200">
       <span class="unit">wizyt/mies</span>
     </div>
 
@@ -409,7 +409,7 @@
 
   <!-- POBIERZ -->
   <div class="pobierz-section">
-    <button class="btn-pobierz">&#8659; Pobierz wypełniony formularz</button>
+    <button class="btn-pobierz" id="btn-pobierz">&#8659; Pobierz wypełniony formularz</button>
     <div class="pobierz-info">
       Kliknij, gdy skończysz wypełniać.<br>
       Pobierzesz gotowy plik do wysłania przez formularz na Discordzie.
@@ -510,8 +510,8 @@
     tr.innerHTML = `
       <td class="td-label"><input type="text" placeholder="${labelPlaceholder}" style="width:100%;border:none;border-bottom:1px solid var(--teal-mid);outline:none;font-size:13.5px;padding:6px 0;background:transparent;font-family:inherit;"></td>
       <td class="td-input-text"><input type="text" placeholder="${notePlaceholder}"></td>
-      <td class="td-kwota"><input type="number" min="0" placeholder="0" class="${cls}" oninput="przelicz()"></td>
-      <td class="td-del"><button class="btn-del" onclick="usunWiersz(this)">×</button></td>
+      <td class="td-kwota"><input type="number" min="0" placeholder="0" class="${cls}"></td>
+      <td class="td-del"><button class="btn-del">×</button></td>
     `;
     return tr;
   }
@@ -625,43 +625,70 @@
     } catch(e) {}
   }
 
-  document.addEventListener('input', zapiszStan);
+  document.addEventListener('input', function(e) {
+    if (e.target.matches('input, select, textarea')) {
+      przelicz();
+    }
+  });
   setInterval(zapiszStan, 10000);
 
   // ── POBIERZ ─────────────────────────────────────────────────────────────
 
   function pobierzFormularz() {
     zapiszStan();
+    const klon = document.documentElement.cloneNode(true);
+    const inputsOryg = document.querySelectorAll('input, select, textarea');
+    const inputsKlon = klon.querySelectorAll('input, select, textarea');
+    inputsOryg.forEach((el, i) => {
+      const kl = inputsKlon[i];
+      if (!kl) return;
+      if (el.tagName === 'TEXTAREA') {
+        kl.textContent = el.value;
+      } else {
+        kl.setAttribute('value', el.value);
+      }
+    });
+    klon.querySelectorAll('.pobierz-section').forEach(el => el.remove());
+    const html = '<!DOCTYPE html>\n' + klon.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
 
-    // ULTRA PROSTA WERSJA - pobierz całą stronę z wypełnionymi wartościami
-    const html = document.documentElement.outerHTML;
-
-    // Użyj data URI (najprostsze, działa wszędzie)
-    const dataUri = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
+    // iOS Safari nie obsługuje a.download — otwieramy w nowej karcie
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      alert('Twój formularz otworzył się w nowej karcie.\n\nJak go zapisać na iPhone:\n1. Naciśnij ikonę udostępniania (prostokąt ze strzałką ↑) na dole ekranu\n2. Wybierz „Zapisz na urządzeniu" lub „Pliki"\n3. Gotowe — wyślij ten plik przez formularz na Discordzie.');
+      return;
+    }
 
     const a = document.createElement('a');
-    a.href = dataUri;
+    a.href     = url;
     a.download = 'W2_bep_wypelniony.html';
-    a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-
-    alert('Plik pobrany! Sprawdź folder Pobrane/Downloads.');
+    URL.revokeObjectURL(url);
   }
+
+  // ── EVENT LISTENERS ─────────────────────────────────────────────────────
+
+  // Add row buttons
+  document.getElementById('btn-add-staly').addEventListener('click', dodajWierszStaly);
+  document.getElementById('btn-add-zmienny').addEventListener('click', dodajWierszZmienny);
+
+  // Delete buttons (event delegation)
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('btn-del')) {
+      usunWiersz(e.target);
+    }
+  });
+
+  // Download button
+  document.getElementById('btn-pobierz').addEventListener('click', pobierzFormularz);
 
   // Init
   wczytajStan();
-
-  // Event listener dla przycisku pobierz (zamiast inline onclick)
-  document.addEventListener('DOMContentLoaded', function() {
-    const btn = document.querySelector('.btn-pobierz');
-    if (btn) {
-      btn.addEventListener('click', function() {
-        pobierzFormularz();
-      });
-    }
-  });
 </script>
 
 </body>
