@@ -716,6 +716,11 @@
 
   function pobierzFormularz() {
     zapiszStan();
+
+    // Pobierz dane użytkownika
+    const userName = document.getElementById('uczestnik-imie').value || 'brak-imienia';
+    const userEmail = document.getElementById('uczestnik-email').value || 'brak-emaila';
+
     const klon = document.documentElement.cloneNode(true);
     const inputsOryg = document.querySelectorAll('input, select, textarea');
     const inputsKlon = klon.querySelectorAll('input, select, textarea');
@@ -728,8 +733,29 @@
         kl.setAttribute('value', el.value);
       }
     });
-    klon.querySelectorAll('.pobierz-section').forEach(el => el.remove());
+    klon.querySelectorAll('.pobierz-section, .autosave-bar').forEach(el => el.remove());
     const html = '<!DOCTYPE html>\n' + klon.outerHTML;
+
+    // KROK 1: Wyślij na Google Drive (API)
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxvanf5PCed2DkpwSWDNUTegXEDjfWr2G1SbPsqMDJ3eglP5qWnKTwaS4YszoCHy7dE/exec';
+
+    fetch(API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        html: html,
+        fileName: 'W2_bep_wypelniony.html',
+        userName: userName,
+        userEmail: userEmail
+      })
+    }).then(() => {
+      console.log('Wysłano na Google Drive');
+    }).catch(err => {
+      console.error('Błąd wysyłania:', err);
+    });
+
+    // KROK 2: Pobierz lokalnie (backup)
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const url  = URL.createObjectURL(blob);
 
@@ -738,7 +764,7 @@
     if (isIOS) {
       window.open(url, '_blank');
       setTimeout(() => URL.revokeObjectURL(url), 10000);
-      alert('Twój formularz otworzył się w nowej karcie.\n\nJak go zapisać na iPhone:\n1. Naciśnij ikonę udostępniania (prostokąt ze strzałką ↑) na dole ekranu\n2. Wybierz „Zapisz na urządzeniu" lub „Pliki"\n3. Gotowe — wyślij ten plik przez formularz na Discordzie.');
+      alert('✅ Zadanie wysłane!\n\n📁 Plik zapisał się automatycznie na Google Drive prowadzącego.\n\n💾 Dodatkowo otworzył się w nowej karcie — zapisz go też lokalnie jako backup.\n\nJak zapisać na iPhone:\n1. Naciśnij ikonę udostępniania ↑\n2. Wybierz „Zapisz na urządzeniu"\n3. Gotowe!');
       return;
     }
 
@@ -749,6 +775,8 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+
+    alert('✅ Zadanie wysłane!\n\n📁 Plik zapisał się automatycznie na Google Drive prowadzącego.\n\n💾 Dodatkowo pobrał się na Twój komputer jako backup.\n\nMożesz zamknąć stronę — zadanie dotarło!');
   }
 
   // ── EVENT LISTENERS ─────────────────────────────────────────────────────
