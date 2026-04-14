@@ -749,7 +749,6 @@
 
     fetch(API_URL, {
       method: 'POST',
-      mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         html: html,
@@ -757,10 +756,14 @@
         userName: userName,
         userEmail: userEmail
       })
-    }).then(() => {
-      console.log('Wysłano na Google Drive');
+    }).then(response => {
+      console.log('Odpowiedź API:', response.status);
+      return response.json();
+    }).then(data => {
+      console.log('Sukces!', data);
     }).catch(err => {
-      console.error('Błąd wysyłania:', err);
+      console.error('BŁĄD API:', err);
+      alert('⚠️ Nie udało się wysłać na Drive. Błąd: ' + err.message + '\n\nAle plik pobrał się lokalnie - masz backup!');
     });
 
     // KROK 2: Pobierz lokalnie (backup)
