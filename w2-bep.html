@@ -632,12 +632,20 @@
 
     document.querySelectorAll('#tbody-stale tr').forEach(tr => {
       const inputs = tr.querySelectorAll('input');
-      stan.stale.push({ label: inputs[0].value, note: inputs[1].value, kwota: inputs[2].value });
+      stan.stale.push({
+        label: inputs[0]?.value || '',
+        note: inputs[1]?.value || '',
+        kwota: inputs[2]?.value || inputs[1]?.value || inputs[0]?.value || ''
+      });
     });
 
     document.querySelectorAll('#tbody-zmienne tr').forEach(tr => {
       const inputs = tr.querySelectorAll('input');
-      stan.zmienne.push({ label: inputs[0].value, note: inputs[1].value, kwota: inputs[2].value });
+      stan.zmienne.push({
+        label: inputs[0]?.value || '',
+        note: inputs[1]?.value || '',
+        kwota: inputs[2]?.value || inputs[1]?.value || inputs[0]?.value || ''
+      });
     });
 
     localStorage.setItem(LS_KEY, JSON.stringify(stan));
