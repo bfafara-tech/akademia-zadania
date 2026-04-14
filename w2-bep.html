@@ -491,10 +491,10 @@
 
   <!-- WYŚLIJ -->
   <div class="pobierz-section">
-    <button class="btn-pobierz" id="btn-pobierz">&#10004; Wyślij zadanie</button>
+    <button class="btn-pobierz" id="btn-pobierz">&#10004; Pobierz zadanie</button>
     <div class="pobierz-info">
       Kliknij, gdy skończysz wypełniać.<br>
-      Zadanie wyśle się automatycznie do prowadzącego + pobierze się lokalnie jako backup.
+      Plik pobierze się na Twój komputer. Następnie wyślij go przez formularz na Discord (#zadanie_domowe).
     </div>
   </div>
 
@@ -503,7 +503,8 @@
   <!-- JAK ODDAĆ -->
   <div class="oddanie">
     <h2>Jak oddać zadanie</h2>
-    <p><strong>Kliknij przycisk "Wyślij zadanie" powyżej.</strong> Twoje zadanie trafi automatycznie do prowadzącego. Nie musisz nic wysyłać przez Discord — wszystko dzieje się automatycznie!</p>
+    <p><strong>1. Kliknij przycisk "Pobierz zadanie" powyżej</strong> — plik zapisze się w folderze Pobrane/Downloads.</p>
+    <p style="margin-top:10px"><strong>2. Prześlij pobrany plik przez formularz na Discord</strong> w kanale <span class="discord">#zadanie_domowe</span></p>
     <p style="margin-top:14px"><strong>Kryterium zaliczenia:</strong> arkusz z wypełnionymi danymi i obliczonym BEP + zdanie wniosku (interpretacja, nie opis obliczeń).<br>
     Nie ma "prawie" ani "zacząłem/am". Zaliczone albo niezaliczone.</p>
     <p style="margin-top:10px"><strong>Feedback od Marcina</strong> otrzymasz do czwartku 23.04.2026, godz. 23:59.</p>
@@ -725,10 +726,6 @@
   function pobierzFormularz() {
     zapiszStan();
 
-    // Pobierz dane użytkownika
-    const userName = document.getElementById('uczestnik-imie').value || 'brak-imienia';
-    const userEmail = document.getElementById('uczestnik-email').value || 'brak-emaila';
-
     const klon = document.documentElement.cloneNode(true);
     const inputsOryg = document.querySelectorAll('input, select, textarea');
     const inputsKlon = klon.querySelectorAll('input, select, textarea');
@@ -744,29 +741,7 @@
     klon.querySelectorAll('.pobierz-section, .autosave-bar').forEach(el => el.remove());
     const html = '<!DOCTYPE html>\n' + klon.outerHTML;
 
-    // KROK 1: Wyślij na Google Drive (API)
-    const API_URL = 'https://script.google.com/macros/s/AKfycbxvanf5PCed2DkpwSWDNUTegXEDjfWr2G1SbPsqMDJ3eglP5qWnKTwaS4YszoCHy7dE/exec';
-
-    fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        html: html,
-        fileName: 'W2_bep_wypelniony.html',
-        userName: userName,
-        userEmail: userEmail
-      })
-    }).then(response => {
-      console.log('Odpowiedź API:', response.status);
-      return response.json();
-    }).then(data => {
-      console.log('Sukces!', data);
-    }).catch(err => {
-      console.error('BŁĄD API:', err);
-      alert('⚠️ Nie udało się wysłać na Drive. Błąd: ' + err.message + '\n\nAle plik pobrał się lokalnie - masz backup!');
-    });
-
-    // KROK 2: Pobierz lokalnie (backup)
+    // Pobierz lokalnie
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const url  = URL.createObjectURL(blob);
 
@@ -775,7 +750,7 @@
     if (isIOS) {
       window.open(url, '_blank');
       setTimeout(() => URL.revokeObjectURL(url), 10000);
-      alert('✅ Zadanie wysłane!\n\n📁 Plik zapisał się automatycznie na Google Drive prowadzącego.\n\n💾 Dodatkowo otworzył się w nowej karcie — zapisz go też lokalnie jako backup.\n\nJak zapisać na iPhone:\n1. Naciśnij ikonę udostępniania ↑\n2. Wybierz „Zapisz na urządzeniu"\n3. Gotowe!');
+      alert('✅ Plik pobrany!\n\nOtworzył się w nowej karcie.\n\nJak zapisać na iPhone:\n1. Naciśnij ikonę udostępniania ↑\n2. Wybierz „Zapisz na urządzeniu"\n3. Wyślij plik przez formularz na Discord (#zadanie_domowe)');
       return;
     }
 
@@ -787,7 +762,7 @@
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    alert('✅ Zadanie wysłane!\n\n📁 Plik zapisał się automatycznie na Google Drive prowadzącego.\n\n💾 Dodatkowo pobrał się na Twój komputer jako backup.\n\nMożesz zamknąć stronę — zadanie dotarło!');
+    alert('✅ Plik pobrany!\n\nSprawdź folder Pobrane/Downloads.\n\nTeraz wyślij plik przez formularz na Discord w kanale #zadanie_domowe.');
   }
 
   // ── EVENT LISTENERS ─────────────────────────────────────────────────────
