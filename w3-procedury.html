@@ -629,55 +629,38 @@
   function pobierzFormularz() {
     zapiszStan();
 
-    // Zbierz dane z tabel dynamicznych
+    // Zbierz wszystkie dane
     const kroki = [];
     document.querySelectorAll('.krok-val').forEach(el => kroki.push(el.value));
     const wyjatki = [];
     document.querySelectorAll('.wyjatek-val').forEach(el => wyjatki.push(el.value));
 
+    const dane = {
+      imie:        document.getElementById('uczestnik-imie').value,
+      email:       document.getElementById('uczestnik-email').value,
+      proc_nazwa:  document.getElementById('proc-nazwa').value,
+      proc_cel:    document.getElementById('proc-cel').value,
+      proc_zakres: document.getElementById('proc-zakres').value,
+      proc_odp:    document.getElementById('proc-odpowiedzialnosc').value,
+      kroki,
+      wyjatki,
+      notatka:     document.getElementById('notatka').value
+    };
+
     // Klonuj dokument
     const klon = document.documentElement.cloneNode(true);
 
-    // Ustaw pola statyczne po ID (pewna metoda)
-    const setVal = (id, val) => {
-      const el = klon.querySelector('#' + id);
-      if (!el) return;
-      if (el.tagName === 'TEXTAREA') el.textContent = val || '';
-      else el.setAttribute('value', val || '');
-    };
-    setVal('uczestnik-imie',        document.getElementById('uczestnik-imie').value);
-    setVal('uczestnik-email',       document.getElementById('uczestnik-email').value);
-    setVal('proc-nazwa',            document.getElementById('proc-nazwa').value);
-    setVal('proc-cel',              document.getElementById('proc-cel').value);
-    setVal('proc-zakres',           document.getElementById('proc-zakres').value);
-    setVal('proc-odpowiedzialnosc', document.getElementById('proc-odpowiedzialnosc').value);
-    setVal('notatka',               document.getElementById('notatka').value);
-
-    // Odbuduj wiersze kroków i wyjątków (dynamiczne — muszą być przebudowane)
-    const esc = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-    const tbodyKroki = klon.querySelector('#tbody-kroki');
-    if (tbodyKroki) {
-      tbodyKroki.innerHTML = kroki.map((val, i) => `
-        <tr>
-          <td class="td-lp">${i + 1}</td>
-          <td class="td-krok-text"><textarea class="krok-input krok-val" oninput="zapiszStan(); aktualizujLicznik()">${esc(val)}</textarea></td>
-          <td class="td-del"><button class="btn-del" onclick="usunKrok(this)">×</button></td>
-        </tr>`).join('');
-    }
-
-    const tbodyWyjatki = klon.querySelector('#tbody-wyjatki');
-    if (tbodyWyjatki) {
-      tbodyWyjatki.innerHTML = wyjatki.map((val, i) => `
-        <tr>
-          <td class="td-lp">${i + 1}</td>
-          <td class="td-krok-text"><textarea class="krok-input wyjatek-val" oninput="zapiszStan()">${esc(val)}</textarea></td>
-          <td class="td-del"><button class="btn-del" onclick="usunWyjatek(this)">×</button></td>
-        </tr>`).join('');
-    }
-
     // Usuń sekcję akcji
     klon.querySelectorAll('.akcja-section').forEach(el => el.remove());
+
+    // Wstrzyknij dane na początku skryptu — gdy plik się otworzy,
+    // dane trafią do localStorage zanim wczytajStan() je odczyta
+    const scriptEl = klon.querySelector('script');
+    if (scriptEl) {
+      const daneJSON = JSON.stringify(JSON.stringify(dane));
+      const seed = `try{localStorage.setItem('w3_procedura_v2',${daneJSON});}catch(e){}\n`;
+      scriptEl.textContent = seed + scriptEl.textContent;
+    }
 
     const html = '<!DOCTYPE html>\n' + klon.outerHTML;
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
