@@ -629,7 +629,7 @@
   function pobierzFormularz() {
     zapiszStan();
 
-    // Zbierz wszystkie dane
+    // Zbierz wszystkie dane bezpośrednio z DOM
     const kroki = [];
     document.querySelectorAll('.krok-val').forEach(el => kroki.push(el.value));
     const wyjatki = [];
@@ -650,17 +650,51 @@
     // Klonuj dokument
     const klon = document.documentElement.cloneNode(true);
 
-    // Usuń sekcję akcji
-    klon.querySelectorAll('.akcja-section').forEach(el => el.remove());
+    // Usuń akcje, autosave bar i WSZYSTKIE skrypty
+    // (brak skryptów = brak konfliktów z localStorage)
+    klon.querySelectorAll('.akcja-section, .autosave-bar, script').forEach(el => el.remove());
 
-    // Wstrzyknij dane na początku skryptu — gdy plik się otworzy,
-    // dane trafią do localStorage zanim wczytajStan() je odczyta
-    const scriptEl = klon.querySelector('script');
-    if (scriptEl) {
-      const daneJSON = JSON.stringify(JSON.stringify(dane));
-      const seed = `try{localStorage.setItem('w3_procedura_v2',${daneJSON});}catch(e){}\n`;
-      scriptEl.textContent = seed + scriptEl.textContent;
-    }
+    // Ustaw pola statyczne po ID
+    const setField = (id, val) => {
+      const el = klon.querySelector('#' + id);
+      if (!el) return;
+      if (el.tagName === 'TEXTAREA') el.textContent = val || '';
+      else el.setAttribute('value', val || '');
+    };
+    setField('uczestnik-imie',        dane.imie);
+    setField('uczestnik-email',       dane.email);
+    setField('proc-nazwa',            dane.proc_nazwa);
+    setField('proc-cel',              dane.proc_cel);
+    setField('proc-zakres',           dane.proc_zakres);
+    setField('proc-odpowiedzialnosc', dane.proc_odp);
+    setField('notatka',               dane.notatka);
+
+    // Odbuduj wiersze tabel przez DOM API (bezpieczne dla każdej przeglądarki)
+    const buildRows = (tbodyId, values) => {
+      const tbody = klon.querySelector('#' + tbodyId);
+      if (!tbody) return;
+      while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
+      values.forEach((val, i) => {
+        const tr = document.createElement('tr');
+        const tdN = document.createElement('td');
+        tdN.className = 'td-lp';
+        tdN.textContent = String(i + 1);
+        const tdT = document.createElement('td');
+        tdT.className = 'td-krok-text';
+        const ta = document.createElement('textarea');
+        ta.className = 'krok-input';
+        ta.textContent = val || '';
+        tdT.appendChild(ta);
+        const tdD = document.createElement('td');
+        tdD.className = 'td-del';
+        tr.appendChild(tdN);
+        tr.appendChild(tdT);
+        tr.appendChild(tdD);
+        tbody.appendChild(tr);
+      });
+    };
+    buildRows('tbody-kroki',   dane.kroki);
+    buildRows('tbody-wyjatki', dane.wyjatki);
 
     const html = '<!DOCTYPE html>\n' + klon.outerHTML;
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
