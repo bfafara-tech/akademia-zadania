@@ -628,16 +628,57 @@
 
   function pobierzFormularz() {
     zapiszStan();
+
+    // Zbierz dane z tabel dynamicznych
+    const kroki = [];
+    document.querySelectorAll('.krok-val').forEach(el => kroki.push(el.value));
+    const wyjatki = [];
+    document.querySelectorAll('.wyjatek-val').forEach(el => wyjatki.push(el.value));
+
+    // Klonuj dokument
     const klon = document.documentElement.cloneNode(true);
-    const inputsOryg = document.querySelectorAll('input, select, textarea');
-    const inputsKlon = klon.querySelectorAll('input, select, textarea');
-    inputsOryg.forEach((el, i) => {
-      const kl = inputsKlon[i];
-      if (!kl) return;
-      if (el.tagName === 'TEXTAREA') kl.textContent = el.value;
-      else kl.setAttribute('value', el.value);
-    });
+
+    // Ustaw pola statyczne po ID (pewna metoda)
+    const setVal = (id, val) => {
+      const el = klon.querySelector('#' + id);
+      if (!el) return;
+      if (el.tagName === 'TEXTAREA') el.textContent = val || '';
+      else el.setAttribute('value', val || '');
+    };
+    setVal('uczestnik-imie',        document.getElementById('uczestnik-imie').value);
+    setVal('uczestnik-email',       document.getElementById('uczestnik-email').value);
+    setVal('proc-nazwa',            document.getElementById('proc-nazwa').value);
+    setVal('proc-cel',              document.getElementById('proc-cel').value);
+    setVal('proc-zakres',           document.getElementById('proc-zakres').value);
+    setVal('proc-odpowiedzialnosc', document.getElementById('proc-odpowiedzialnosc').value);
+    setVal('notatka',               document.getElementById('notatka').value);
+
+    // Odbuduj wiersze kroków i wyjątków (dynamiczne — muszą być przebudowane)
+    const esc = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+    const tbodyKroki = klon.querySelector('#tbody-kroki');
+    if (tbodyKroki) {
+      tbodyKroki.innerHTML = kroki.map((val, i) => `
+        <tr>
+          <td class="td-lp">${i + 1}</td>
+          <td class="td-krok-text"><textarea class="krok-input krok-val" oninput="zapiszStan(); aktualizujLicznik()">${esc(val)}</textarea></td>
+          <td class="td-del"><button class="btn-del" onclick="usunKrok(this)">×</button></td>
+        </tr>`).join('');
+    }
+
+    const tbodyWyjatki = klon.querySelector('#tbody-wyjatki');
+    if (tbodyWyjatki) {
+      tbodyWyjatki.innerHTML = wyjatki.map((val, i) => `
+        <tr>
+          <td class="td-lp">${i + 1}</td>
+          <td class="td-krok-text"><textarea class="krok-input wyjatek-val" oninput="zapiszStan()">${esc(val)}</textarea></td>
+          <td class="td-del"><button class="btn-del" onclick="usunWyjatek(this)">×</button></td>
+        </tr>`).join('');
+    }
+
+    // Usuń sekcję akcji
     klon.querySelectorAll('.akcja-section').forEach(el => el.remove());
+
     const html = '<!DOCTYPE html>\n' + klon.outerHTML;
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const url  = URL.createObjectURL(blob);
