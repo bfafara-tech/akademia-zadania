@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>W3 — Pisemne Zobowiązanie do Procedur</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:       #1d4d3f;
+      --teal-dark:  #163a2f;
+      --teal-light: #eef2ee;
+      --teal-mid:   #c2d4ce;
+      --orange:     #E86B2A;
+      --text:       #1a1a1a;
+      --muted:      #555;
+      --border:     #d4ddd8;
+      --bg:         #f5f2eb;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 40px 20px;
+      padding-top: 72px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 14px;
+      padding: 48px 52px;
+      box-shadow: 0 2px 20px rgba(29,77,63,0.10);
+    }
+
+    /* HEADER */
+    .header { border-bottom: 3px solid var(--teal); padding-bottom: 20px; margin-bottom: 28px; }
+    .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; color: var(--teal-dark); }
+    .header .subtitle { font-size: 14px; color: var(--muted); margin-top: 6px; }
+    .deadline { display: inline-block; margin-top: 12px; background: var(--teal); color: #fff; font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 4px; letter-spacing: 0.3px; }
+
+    /* CALLOUTS */
+    .callout { background: var(--teal-light); border-left: 4px solid var(--teal); padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 28px; font-size: 14px; color: var(--muted); line-height: 1.65; }
+    .callout-warn { background: #fdf6e3; border-left-color: #b8860b; color: #4a3a10; }
+
+    /* TWO-TRACK */
+    .two-track { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+    .track-item { border-left: 4px solid; padding: 10px 16px; border-radius: 0 6px 6px 0; }
+    .track-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 3px; }
+    .track-text { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+    .track-owner  { border-color: var(--orange); background: #fdf1eb; }
+    .track-owner  .track-label { color: var(--orange); }
+    .track-manager { border-color: #4CC9C0; background: #ebf8f7; }
+    .track-manager .track-label { color: #0e8a84; }
+
+    /* KROK */
+    .krok { margin-bottom: 40px; }
+    .krok-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .krok-num { width: 36px; height: 36px; background: var(--teal); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; }
+    .krok-header h2 { font-size: 17px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--teal-dark); }
+    .krok p { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+
+    /* FIELD ROWS */
+    .field-block { margin-bottom: 20px; }
+    .field-block label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+    .field-block input[type="text"] {
+      width: 100%; border: none; border-bottom: 2px solid var(--teal);
+      outline: none; font-size: 15px; padding: 6px 4px;
+      background: transparent; font-family: inherit; color: var(--text);
+    }
+    .field-block textarea {
+      width: 100%; border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px 14px; font-size: 14px; font-family: inherit; color: var(--text);
+      resize: vertical; outline: none; line-height: 1.6; min-height: 90px;
+    }
+    .field-block textarea:focus { border-color: var(--teal); }
+    .field-hint { font-size: 12.5px; color: #888; font-style: italic; margin-top: 6px; }
+
+    /* TABELA KROKÓW */
+    .tabela-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead th { background: var(--teal); color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    tbody tr:nth-child(even) { background: #f8f7f3; }
+    tbody tr:hover { background: var(--teal-light); }
+    tbody td { padding: 0; border-bottom: 1px solid var(--border); vertical-align: middle; }
+
+    .td-lp { width: 40px; text-align: center; font-weight: 700; color: var(--teal); font-size: 13px; padding: 8px 6px; vertical-align: middle; }
+    .td-krok-text { }
+    .td-del { width: 36px; text-align: center; vertical-align: middle; }
+
+    td textarea.krok-input {
+      width: 100%; border: none; outline: none; background: transparent;
+      font-size: 13.5px; padding: 9px 12px; font-family: inherit; color: var(--text);
+      resize: none; min-height: 48px; line-height: 1.5;
+    }
+
+    .btn-del { background: none; border: none; cursor: pointer; color: #bbb; font-size: 16px; padding: 4px 6px; border-radius: 4px; transition: color 0.15s, background 0.15s; }
+    .btn-del:hover { color: #c0392b; background: #fdecea; }
+
+    .btn-add-row { display: flex; align-items: center; gap: 7px; margin-top: 10px; background: none; border: 1.5px dashed var(--teal-mid); color: var(--teal); font-size: 13px; font-weight: 600; font-family: inherit; padding: 7px 16px; border-radius: 6px; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+    .btn-add-row:hover { background: var(--teal-light); border-color: var(--teal); }
+
+    .counter-info { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+    .counter-info span { font-weight: 700; color: var(--teal-dark); }
+    .counter-warn { color: #c0392b; }
+
+    /* PYTANIE KOŃCOWE */
+    .pytanie-box { background: var(--teal-light); border-left: 4px solid var(--teal); padding: 16px 20px; border-radius: 0 8px 8px 0; margin-bottom: 16px; font-size: 15px; font-style: italic; color: var(--teal-dark); line-height: 1.6; }
+    .odpowiedz-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 10px; }
+    textarea.pole-tekstowe { width: 100%; min-height: 130px; border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-size: 14px; font-family: inherit; color: var(--text); resize: vertical; outline: none; line-height: 1.6; }
+    textarea.pole-tekstowe:focus { border-color: var(--teal); }
+
+    /* ODDANIE */
+    .oddanie { background: var(--teal); color: #fff; border-radius: 10px; padding: 24px 28px; margin-top: 8px; }
+    .oddanie h2 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+    .oddanie p { font-size: 13.5px; line-height: 1.65; color: rgba(255,255,255,0.85); margin-bottom: 8px; }
+    .oddanie p strong { color: #fff; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
+    .note { font-size: 12.5px; color: #888; font-style: italic; margin-top: 6px; }
+
+    /* PRZYCISKI AKCJI */
+    .akcja-section { margin-top: 20px; padding: 24px 28px; background: var(--teal-light); border-radius: 10px; }
+    .akcja-section h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--teal-dark); margin-bottom: 16px; }
+    .akcja-przyciski { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+
+    .btn-wyslij {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--orange); color: #fff; border: none;
+      font-size: 15px; font-weight: 700; font-family: inherit;
+      padding: 13px 28px; border-radius: 7px; cursor: pointer;
+      transition: background 0.15s; flex: 1; min-width: 200px;
+      justify-content: center;
+    }
+    .btn-wyslij:hover:not(:disabled) { background: #c95c20; }
+    .btn-wyslij:disabled { background: #bbb; cursor: not-allowed; }
+
+    .btn-pobierz {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--teal); color: #fff; border: none;
+      font-size: 13px; font-weight: 600; font-family: inherit;
+      padding: 11px 20px; border-radius: 7px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-pobierz:hover { background: var(--teal-dark); }
+
+    .akcja-info { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+
+    /* STATUS WYSYŁANIA */
+    .wyslij-status { display: none; margin-top: 12px; padding: 12px 16px; border-radius: 7px; font-size: 13.5px; font-weight: 600; }
+    .wyslij-status.ok { background: #e8f5e9; color: #2e7d32; display: block; }
+    .wyslij-status.err { background: #fdecea; color: #c0392b; display: block; }
+
+    /* AUTOSAVE */
+    .autosave-bar { position: fixed; top: 0; left: 0; right: 0; background: var(--teal-dark); color: #fff; font-size: 12px; font-family: 'Segoe UI', Arial, sans-serif; padding: 6px 20px; display: flex; align-items: center; gap: 10px; z-index: 999; }
+    .autosave-bar span { opacity: 0.85; }
+    .autosave-bar .as-status { font-weight: 600; opacity: 1; }
+
+    /* SEKCJA NAGLOWEK */
+    .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--teal); background: var(--teal-light); border-radius: 4px; display: inline-block; padding: 3px 10px; margin-bottom: 14px; }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .container { box-shadow: none; padding: 20px; }
+      .btn-add-row, .btn-del, .akcja-section, .autosave-bar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="autosave-bar">
+  <span>&#128190;</span>
+  <span>Postęp zapisuje się automatycznie w tej przeglądarce.</span>
+  <span class="as-status" id="as-status">Możesz zamknąć i wrócić później.</span>
+</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Pisemne Zobowiązanie do Procedur</h1>
+    <div class="subtitle">Zadanie W3 &nbsp;|&nbsp; Akademia Managera &nbsp;|&nbsp; prowadząca: Urszula Łaskawiec</div>
+    <div class="deadline">Happyline: 27.04.2026 (poniedziałek), godz. 23:59</div>
+  </div>
+
+  <!-- DANE UCZESTNIKA -->
+  <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:28px;">
+    <div style="flex:1; min-width:200px;">
+      <label style="display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:6px;">Imię i nazwisko</label>
+      <input type="text" id="uczestnik-imie" placeholder="np. Anna Kowalska" style="width:100%; border:none; border-bottom:2px solid var(--teal); outline:none; font-size:15px; padding:6px 4px; background:transparent; font-family:inherit; color:var(--text);" oninput="zapiszStan()">
+    </div>
+    <div style="flex:1; min-width:200px;">
+      <label style="display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:6px;">Adres e-mail</label>
+      <input type="email" id="uczestnik-email" placeholder="np. anna@gabinet.pl" style="width:100%; border:none; border-bottom:2px solid var(--teal); outline:none; font-size:15px; padding:6px 4px; background:transparent; font-family:inherit; color:var(--text);" oninput="zapiszStan()">
+    </div>
+  </div>
+
+  <!-- UWAGA TECHNICZNA -->
+  <div class="callout callout-warn">
+    <strong>Zanim zaczniesz — ważna informacja techniczna:</strong><br><br>
+    Ten formularz zapisuje Twój postęp automatycznie w przeglądarce, z której korzystasz.
+    Możesz go zamknąć i wrócić później — dane będą czekać.<br><br>
+    <strong>Przez cały czas wypełniania używaj tego samego komputera i tej samej przeglądarki.</strong>
+    Jeśli otworzysz plik na innym urządzeniu lub w innej przeglądarce, zaczniesz od pustego formularza.
+  </div>
+
+  <!-- TWO-TRACK -->
+  <div class="two-track">
+    <div class="track-item track-owner">
+      <div class="track-label">Właściciel / Manager zarządzający zespołem</div>
+      <div class="track-text">Wybierz jeden powtarzalny proces, który istnieje "w głowie" lub jest realizowany różnie przez różne osoby. Napisz procedurę, wskaż osobę odpowiedzialną za stosowanie i wdróż ją: przedstaw na żywo, stosuj minimum 3 robocze dni przed oddaniem zadania. W Części 2 opisz co działało, a co wymagało korekty.</div>
+    </div>
+    <div class="track-item track-manager">
+      <div class="track-label">Manager bez własnego zespołu</div>
+      <div class="track-text">Wybierz powtarzalny proces, w którym uczestniczysz lub który dobrze znasz. Napisz procedurę i przedstaw ją właścicielowi lub osobie odpowiedzialnej jako propozycję. W Części 2 opisz uwagi z tej rozmowy i co zmieniłbyś/zmieniłabyś po jej zakończeniu.</div>
+    </div>
+  </div>
+
+  <!-- CZĘŚĆ 1 — PROCEDURA -->
+  <div class="krok">
+    <div class="krok-header">
+      <div class="krok-num">1</div>
+      <h2>Procedura</h2>
+    </div>
+    <p>Napisz procedurę dla wybranego procesu. Podczas LIVE Ula pokazała przykład procedury „Pierwsza Wizyta" — możesz wybrać ten sam proces lub dowolny inny, który w Twoim gabinecie wymaga uporządkowania.</p>
+
+    <!-- 1.1 Nazwa -->
+    <div class="field-block">
+      <label>Nazwa procedury</label>
+      <input type="text" id="proc-nazwa" placeholder='np. Pierwsza Wizyta / Rezerwacja telefoniczna / Onboarding nowego pracownika' oninput="zapiszStan()">
+      <div class="field-hint">Krótka, konkretna nazwa — taka, żeby każdy w zespole wiedział o czym mówisz.</div>
+    </div>
+
+    <!-- 1.2 Cel -->
+    <div class="field-block">
+      <label>Cel procedury</label>
+      <textarea id="proc-cel" placeholder="np. Zapewnienie pacjentowi pierwszorazowemu spójnego i uporządkowanego przebiegu wizyty od momentu zapisu do zakończenia wizyty i ustalenia dalszych kroków." oninput="zapiszStan()"></textarea>
+      <div class="field-hint">Jedno–dwa zdania. Co ta procedura ma zapewniać — dla kogo i po co.</div>
+    </div>
+
+    <!-- 1.3 Zakres -->
+    <div class="field-block">
+      <label>Zakres</label>
+      <textarea id="proc-zakres" placeholder="np. Procedura dotyczy wszystkich pacjentów zapisujących się na pierwszą wizytę w gabinecie." oninput="zapiszStan()"></textarea>
+      <div class="field-hint">Kogo lub czego dotyczy ta procedura. Kiedy się ją stosuje, a kiedy nie.</div>
+    </div>
+
+    <!-- 1.4 Odpowiedzialność -->
+    <div class="field-block">
+      <label>Kto jest odpowiedzialny za stosowanie tej procedury</label>
+      <textarea id="proc-odpowiedzialnosc" placeholder="np. Rejestracja: kontakt z pacjentem, informacja organizacyjna, przyjęcie na miejscu&#10;Fizjoterapeuta: przejęcie pacjenta, przebieg wizyty, zalecenia po wizycie" oninput="zapiszStan()" style="min-height:70px;"></textarea>
+      <div class="field-hint">Podaj konkretną rolę lub osobę — nie „wszyscy". Możesz wpisać kilka ról z podziałem obowiązków.</div>
+    </div>
+
+    <hr class="divider" style="margin:24px 0;">
+
+    <!-- 1.5 Kroki -->
+    <div class="section-label">Kroki działania</div>
+    <p style="margin-bottom:14px;">Wypisz kroki w kolejności. <strong>Każdy krok zaczyna się od czasownika</strong> (zadzwoń, wydrukuj, przekaż, zapytaj, zapisz…). Minimum 5 kroków — bez tego zadanie nie jest zaliczone.</p>
+
+    <div class="tabela-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px;">#</th>
+            <th>Krok (od czasownika)</th>
+            <th style="width:36px;"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody-kroki">
+          <tr>
+            <td class="td-lp">1</td>
+            <td class="td-krok-text"><textarea class="krok-input krok-val" placeholder="np. Przyjmij zgłoszenie pacjenta — telefonicznie, mailowo lub przez formularz online." oninput="zapiszStan(); aktualizujLicznik()"></textarea></td>
+            <td class="td-del"><button class="btn-del" onclick="usunKrok(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-lp">2</td>
+            <td class="td-krok-text"><textarea class="krok-input krok-val" placeholder="np. Zapisz pacjenta w systemie i potwierdź termin." oninput="zapiszStan(); aktualizujLicznik()"></textarea></td>
+            <td class="td-del"><button class="btn-del" onclick="usunKrok(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-lp">3</td>
+            <td class="td-krok-text"><textarea class="krok-input krok-val" placeholder="np. Przekaż pacjentowi informacje organizacyjne: adres, godzina, co zabrać, co przygotować." oninput="zapiszStan(); aktualizujLicznik()"></textarea></td>
+            <td class="td-del"><button class="btn-del" onclick="usunKrok(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-lp">4</td>
+            <td class="td-krok-text"><textarea class="krok-input krok-val" placeholder="np. Przyjmij pacjenta na miejscu, zweryfikuj dane, daj do podpisania dokumenty." oninput="zapiszStan(); aktualizujLicznik()"></textarea></td>
+            <td class="td-del"><button class="btn-del" onclick="usunKrok(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-lp">5</td>
+            <td class="td-krok-text"><textarea class="krok-input krok-val" placeholder="np. Przekaż pacjenta fizjoterapeucie z informacją o celu wizyty." oninput="zapiszStan(); aktualizujLicznik()"></textarea></td>
+            <td class="td-del"><button class="btn-del" onclick="usunKrok(this)">×</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="btn-add-row" onclick="dodajKrok()">+ Dodaj krok</button>
+    <div class="counter-info" id="krok-licznik">Liczba kroków: <span id="krok-count">5</span> / min. 5 wymaganych</div>
+
+    <hr class="divider" style="margin:24px 0;">
+
+    <!-- 1.6 Sytuacje wyjątkowe -->
+    <div class="section-label">Sytuacje wyjątkowe / punkty krytyczne</div>
+    <p style="margin-bottom:14px;">Gdzie ten proces najczęściej się psuje? Co się dzieje, gdy coś idzie nie tak — i jak wtedy postępować?</p>
+
+    <div class="tabela-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px;">#</th>
+            <th>Co może pójść nie tak / punkt krytyczny</th>
+            <th style="width:36px;"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody-wyjatki">
+          <tr>
+            <td class="td-lp">1</td>
+            <td class="td-krok-text"><textarea class="krok-input wyjatek-val" placeholder="np. Pacjent nie dostał pełnej informacji przed wizytą — przekaż brakujące dane telefonicznie najpóźniej dzień przed." oninput="zapiszStan()"></textarea></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWyjatek(this)">×</button></td>
+          </tr>
+          <tr>
+            <td class="td-lp">2</td>
+            <td class="td-krok-text"><textarea class="krok-input wyjatek-val" placeholder="np. Pacjent przychodzi bez dokumentów — wypełnia dokumentację na miejscu, wizyta zaczyna się z opóźnieniem." oninput="zapiszStan()"></textarea></td>
+            <td class="td-del"><button class="btn-del" onclick="usunWyjatek(this)">×</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="btn-add-row" onclick="dodajWyjatek()">+ Dodaj sytuację wyjątkową</button>
+    <p class="note">Minimum 1 punkt krytyczny. Dobre procedury opisują nie tylko idealny przebieg, ale też co robić gdy coś się rozjeżdża.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- CZĘŚĆ 2 — NOTATKA Z WDROŻENIA / ROZMOWY -->
+  <div class="krok">
+    <div class="krok-header">
+      <div class="krok-num">2</div>
+      <h2>Notatka z wdrożenia lub rozmowy</h2>
+    </div>
+
+    <div class="two-track" style="margin-bottom:20px;">
+      <div class="track-item track-owner">
+        <div class="track-label">Właściciel / Manager zarządzający zespołem</div>
+        <div class="track-text">Opisz co się wydarzyło gdy wdrożyłeś/aś procedurę. Przedstaw ją na żywo i stosuj minimum 3 robocze dni przed oddaniem. Co działało zgodnie z planem? Co wymagało korekty?</div>
+      </div>
+      <div class="track-item track-manager">
+        <div class="track-label">Manager bez własnego zespołu</div>
+        <div class="track-text">Opisz przebieg rozmowy z właścicielem lub osobą odpowiedzialną, której przedstawiłeś/aś procedurę jako propozycję. Jakie padły uwagi? Co zmienisz?</div>
+      </div>
+    </div>
+
+    <div class="pytanie-box">
+      Co się wydarzyło gdy wdrożyłeś/aś procedurę lub przedstawiłeś/aś ją jako propozycję?<br>
+      <small style="font-size:13px;opacity:0.75;">Nie: „Poszło dobrze." Tak: „Rejestracja miała problem z krokiem 3 — okazało się, że nie mamy gotowego tekstu SMS do wysyłki. Dopisałam go jako szablon, procedura działa od dwóch dni bez zarzutów." Lub: „Właściciel zaproponował, żeby krok 4 wykonywał terapeuta, nie recepcja — zmieniłam odpowiedzialność."</small>
+    </div>
+
+    <div class="odpowiedz-label">Moja notatka:</div>
+    <textarea class="pole-tekstowe" id="notatka" placeholder="Opisz co się wydarzyło podczas wdrożenia lub rozmowy. Minimum jedna konkretna obserwacja — co zadziałało lub co wymagało zmiany." oninput="zapiszStan()"></textarea>
+  </div>
+
+  <hr class="divider">
+
+  <!-- POBIERZ -->
+  <div class="akcja-section">
+    <h3>Pobierz wypełniony formularz</h3>
+    <div class="akcja-przyciski">
+      <button class="btn-wyslij" onclick="pobierzFormularz()">
+        &#8659; Pobierz wypełniony formularz
+      </button>
+    </div>
+    <div class="akcja-info">
+      Kliknij gdy skończysz wypełniać. Pobierzesz gotowy plik do wysłania zgodnie z instrukcją.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- JAK ODDAĆ -->
+  <div class="oddanie">
+    <h2>Kryteria zaliczenia</h2>
+    <p>Gotowa procedura z minimum 5 krokami (każdy od czasownika) + notatka z wdrożenia lub rozmowy z co najmniej jedną konkretną obserwacją.<br>
+    Nie ma "prawie" ani "zacząłem/am". Zaliczone albo niezaliczone.</p>
+    <p style="margin-top:10px"><strong>Feedback od Uli</strong> otrzymasz do czwartku 30.04.2026, godz. 23:59.</p>
+  </div>
+
+</div>
+
+<script>
+  const LS_KEY = 'w3_procedura_v2';
+
+  // ── URL SKRYPTU (wypełniony automatycznie) ──────────────────────────────
+  const SCRIPT_URL = 'TUTAJ_WKLEJ_URL_APPS_SCRIPT';
+
+  // ── KROKI ───────────────────────────────────────────────────────────────
+
+  function nowyWierszKrok(lp) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="td-lp">${lp}</td>
+      <td class="td-krok-text"><textarea class="krok-input krok-val" placeholder="Wpisz krok od czasownika…" oninput="zapiszStan(); aktualizujLicznik()"></textarea></td>
+      <td class="td-del"><button class="btn-del" onclick="usunKrok(this)">×</button></td>
+    `;
+    return tr;
+  }
+
+  function dodajKrok() {
+    const tbody = document.getElementById('tbody-kroki');
+    const lp = tbody.querySelectorAll('tr').length + 1;
+    tbody.appendChild(nowyWierszKrok(lp));
+    aktualizujLicznik();
+  }
+
+  function usunKrok(btn) {
+    btn.closest('tr').remove();
+    przeliczLp('tbody-kroki');
+    aktualizujLicznik();
+    zapiszStan();
+  }
+
+  function aktualizujLicznik() {
+    const count = document.querySelectorAll('.krok-val').length;
+    const el = document.getElementById('krok-count');
+    const info = document.getElementById('krok-licznik');
+    if (el) el.textContent = count;
+    if (info) {
+      if (count < 5) {
+        info.className = 'counter-info counter-warn';
+        info.innerHTML = `Liczba kroków: <span>${count}</span> / min. 5 wymaganych ⚠️ dodaj jeszcze ${5 - count}`;
+      } else {
+        info.className = 'counter-info';
+        info.innerHTML = `Liczba kroków: <span>${count}</span> / min. 5 wymaganych ✓`;
+      }
+    }
+  }
+
+  // ── WYJĄTKI ─────────────────────────────────────────────────────────────
+
+  function nowyWierszWyjatek(lp) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="td-lp">${lp}</td>
+      <td class="td-krok-text"><textarea class="krok-input wyjatek-val" placeholder="Opisz sytuację wyjątkową i jak wtedy postępować…" oninput="zapiszStan()"></textarea></td>
+      <td class="td-del"><button class="btn-del" onclick="usunWyjatek(this)">×</button></td>
+    `;
+    return tr;
+  }
+
+  function dodajWyjatek() {
+    const tbody = document.getElementById('tbody-wyjatki');
+    const lp = tbody.querySelectorAll('tr').length + 1;
+    tbody.appendChild(nowyWierszWyjatek(lp));
+  }
+
+  function usunWyjatek(btn) {
+    btn.closest('tr').remove();
+    przeliczLp('tbody-wyjatki');
+    zapiszStan();
+  }
+
+  function przeliczLp(tbodyId) {
+    document.querySelectorAll(`#${tbodyId} tr`).forEach((tr, i) => {
+      const td = tr.querySelector('.td-lp');
+      if (td) td.textContent = i + 1;
+    });
+  }
+
+  // ── AUTOSAVE ────────────────────────────────────────────────────────────
+
+  function zapiszStan() {
+    const kroki = [];
+    document.querySelectorAll('.krok-val').forEach(el => kroki.push(el.value));
+    const wyjatki = [];
+    document.querySelectorAll('.wyjatek-val').forEach(el => wyjatki.push(el.value));
+
+    const stan = {
+      imie:       document.getElementById('uczestnik-imie').value,
+      email:      document.getElementById('uczestnik-email').value,
+      proc_nazwa: document.getElementById('proc-nazwa').value,
+      proc_cel:   document.getElementById('proc-cel').value,
+      proc_zakres: document.getElementById('proc-zakres').value,
+      proc_odp:   document.getElementById('proc-odpowiedzialnosc').value,
+      kroki,
+      wyjatki,
+      notatka:    document.getElementById('notatka').value
+    };
+
+    localStorage.setItem(LS_KEY, JSON.stringify(stan));
+    const st = document.getElementById('as-status');
+    if (st) {
+      const t = new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+      st.textContent = `Ostatni zapis: ${t}`;
+    }
+  }
+
+  function wczytajStan() {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    try {
+      const s = JSON.parse(raw);
+      const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+      set('uczestnik-imie', s.imie);
+      set('uczestnik-email', s.email);
+      set('proc-nazwa', s.proc_nazwa);
+      set('proc-cel', s.proc_cel);
+      set('proc-zakres', s.proc_zakres);
+      set('proc-odpowiedzialnosc', s.proc_odp);
+      set('notatka', s.notatka);
+
+      if (s.kroki && s.kroki.length) {
+        const tbody = document.getElementById('tbody-kroki');
+        const predef = tbody.querySelectorAll('tr');
+        s.kroki.forEach((val, i) => {
+          if (i < predef.length) {
+            const ta = predef[i].querySelector('.krok-val');
+            if (ta) ta.value = val;
+          } else {
+            const tr = nowyWierszKrok(i + 1);
+            tbody.appendChild(tr);
+            tr.querySelector('.krok-val').value = val;
+          }
+        });
+      }
+
+      if (s.wyjatki && s.wyjatki.length) {
+        const tbody = document.getElementById('tbody-wyjatki');
+        const predef = tbody.querySelectorAll('tr');
+        s.wyjatki.forEach((val, i) => {
+          if (i < predef.length) {
+            const ta = predef[i].querySelector('.wyjatek-val');
+            if (ta) ta.value = val;
+          } else {
+            const tr = nowyWierszWyjatek(i + 1);
+            tbody.appendChild(tr);
+            tr.querySelector('.wyjatek-val').value = val;
+          }
+        });
+      }
+
+      aktualizujLicznik();
+    } catch(e) {}
+  }
+
+  document.addEventListener('input', zapiszStan);
+  setInterval(zapiszStan, 10000);
+
+  // ── WYŚLIJ NA DYSK ──────────────────────────────────────────────────────
+
+  async function wyslijFormularz() {
+    zapiszStan();
+
+    // Walidacja
+    const imie = document.getElementById('uczestnik-imie').value.trim();
+    const email = document.getElementById('uczestnik-email').value.trim();
+    const procNazwa = document.getElementById('proc-nazwa').value.trim();
+    const notatka = document.getElementById('notatka').value.trim();
+
+    if (!imie || !email) {
+      pokazStatus('err', 'Uzupełnij imię i adres e-mail przed wysłaniem.');
+      return;
+    }
+    if (!procNazwa) {
+      pokazStatus('err', 'Uzupełnij nazwę procedury.');
+      return;
+    }
+
+    const kroki = [];
+    document.querySelectorAll('.krok-val').forEach(el => kroki.push(el.value));
+    if (kroki.filter(k => k.trim()).length < 5) {
+      pokazStatus('err', 'Wymagane minimum 5 kroków działania.');
+      return;
+    }
+
+    const wyjatki = [];
+    document.querySelectorAll('.wyjatek-val').forEach(el => wyjatki.push(el.value));
+
+    if (!notatka) {
+      pokazStatus('err', 'Uzupełnij notatkę z wdrożenia lub rozmowy.');
+      return;
+    }
+
+    const btn = document.getElementById('btn-wyslij');
+    btn.disabled = true;
+    btn.textContent = 'Wysyłanie…';
+
+    const dane = {
+      imie,
+      email,
+      proc_nazwa: procNazwa,
+      proc_cel:   document.getElementById('proc-cel').value,
+      proc_zakres: document.getElementById('proc-zakres').value,
+      proc_odp:   document.getElementById('proc-odpowiedzialnosc').value,
+      kroki,
+      wyjatki,
+      notatka
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(dane)
+      });
+      btn.textContent = '✓ Wysłano!';
+      btn.style.background = '#2e7d32';
+      pokazStatus('ok', 'Zadanie wysłane! Ula je otrzymała. Możesz zamknąć formularz.');
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = '→ Wyślij zadanie do Uli';
+      pokazStatus('err', 'Błąd połączenia. Spróbuj ponownie lub pobierz formularz i wyślij przez WebToLearn.');
+    }
+  }
+
+  function pokazStatus(typ, tekst) {
+    const el = document.getElementById('wyslij-status');
+    el.className = 'wyslij-status ' + typ;
+    el.textContent = tekst;
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ── POBIERZ ─────────────────────────────────────────────────────────────
+
+  function pobierzFormularz() {
+    zapiszStan();
+    const klon = document.documentElement.cloneNode(true);
+    const inputsOryg = document.querySelectorAll('input, select, textarea');
+    const inputsKlon = klon.querySelectorAll('input, select, textarea');
+    inputsOryg.forEach((el, i) => {
+      const kl = inputsKlon[i];
+      if (!kl) return;
+      if (el.tagName === 'TEXTAREA') kl.textContent = el.value;
+      else kl.setAttribute('value', el.value);
+    });
+    klon.querySelectorAll('.akcja-section').forEach(el => el.remove());
+    const html = '<!DOCTYPE html>\n' + klon.outerHTML;
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      alert('Formularz otworzył się w nowej karcie.\n\nJak zapisać na iPhone:\n1. Naciśnij ikonę udostępniania ↑\n2. Wybierz „Zapisz na urządzeniu"\n3. Gotowe.');
+      return;
+    }
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'W3_procedura_wypelniona.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Init
+  wczytajStan();
+</script>
+
+</body>
+</html>
