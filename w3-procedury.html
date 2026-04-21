@@ -122,37 +122,11 @@
     .divider { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
     .note { font-size: 12.5px; color: #888; font-style: italic; margin-top: 6px; }
 
-    /* PRZYCISKI AKCJI */
-    .akcja-section { margin-top: 20px; padding: 24px 28px; background: var(--teal-light); border-radius: 10px; }
-    .akcja-section h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--teal-dark); margin-bottom: 16px; }
-    .akcja-przyciski { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
-
-    .btn-wyslij {
-      display: flex; align-items: center; gap: 10px;
-      background: var(--orange); color: #fff; border: none;
-      font-size: 15px; font-weight: 700; font-family: inherit;
-      padding: 13px 28px; border-radius: 7px; cursor: pointer;
-      transition: background 0.15s; flex: 1; min-width: 200px;
-      justify-content: center;
-    }
-    .btn-wyslij:hover:not(:disabled) { background: #c95c20; }
-    .btn-wyslij:disabled { background: #bbb; cursor: not-allowed; }
-
-    .btn-pobierz {
-      display: flex; align-items: center; gap: 10px;
-      background: var(--teal); color: #fff; border: none;
-      font-size: 13px; font-weight: 600; font-family: inherit;
-      padding: 11px 20px; border-radius: 7px; cursor: pointer;
-      transition: background 0.15s;
-    }
+    /* POBIERZ */
+    .pobierz-section { margin-top: 20px; padding: 20px 24px; background: var(--teal-light); border-radius: 10px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .btn-pobierz { display: flex; align-items: center; gap: 10px; background: var(--teal); color: #fff; border: none; font-size: 14px; font-weight: 700; font-family: inherit; padding: 11px 24px; border-radius: 7px; cursor: pointer; transition: background 0.15s; }
     .btn-pobierz:hover { background: var(--teal-dark); }
-
-    .akcja-info { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
-
-    /* STATUS WYSYŁANIA */
-    .wyslij-status { display: none; margin-top: 12px; padding: 12px 16px; border-radius: 7px; font-size: 13.5px; font-weight: 600; }
-    .wyslij-status.ok { background: #e8f5e9; color: #2e7d32; display: block; }
-    .wyslij-status.err { background: #fdecea; color: #c0392b; display: block; }
+    .pobierz-info { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
     /* AUTOSAVE */
     .autosave-bar { position: fixed; top: 0; left: 0; right: 0; background: var(--teal-dark); color: #fff; font-size: 12px; font-family: 'Segoe UI', Arial, sans-serif; padding: 6px 20px; display: flex; align-items: center; gap: 10px; z-index: 999; }
@@ -165,7 +139,7 @@
     @media print {
       body { background: #fff; padding: 0; }
       .container { box-shadow: none; padding: 20px; }
-      .btn-add-row, .btn-del, .akcja-section, .autosave-bar { display: none; }
+      .btn-add-row, .btn-del, .pobierz-section, .autosave-bar { display: none; }
     }
   </style>
 </head>
@@ -367,15 +341,11 @@
   <hr class="divider">
 
   <!-- POBIERZ -->
-  <div class="akcja-section">
-    <h3>Pobierz wypełniony formularz</h3>
-    <div class="akcja-przyciski">
-      <button class="btn-wyslij" onclick="pobierzFormularz()">
-        &#8659; Pobierz wypełniony formularz
-      </button>
-    </div>
-    <div class="akcja-info">
-      Kliknij gdy skończysz wypełniać. Pobierzesz gotowy plik do wysłania zgodnie z instrukcją.
+  <div class="pobierz-section">
+    <button class="btn-pobierz" onclick="pobierzFormularz()">&#8659; Pobierz wypełniony formularz</button>
+    <div class="pobierz-info">
+      Kliknij, gdy skończysz wypełniać.<br>
+      Pobierzesz gotowy plik do wysłania.
     </div>
   </div>
 
@@ -383,8 +353,9 @@
 
   <!-- JAK ODDAĆ -->
   <div class="oddanie">
-    <h2>Kryteria zaliczenia</h2>
-    <p>Gotowa procedura z minimum 5 krokami (każdy od czasownika) + notatka z wdrożenia lub rozmowy z co najmniej jedną konkretną obserwacją.<br>
+    <h2>Jak oddać zadanie</h2>
+    <p>Pobierz wypełniony formularz przyciskiem powyżej, a następnie prześlij go przez formularz, do którego link znajdziesz w opisie tego zadania na platformie WebToLearn, pod nagraniem z LIVE W3 „Pisanie Procedury „Pierwsza Wizyta"".</p>
+    <p style="margin-top:14px"><strong>Kryterium zaliczenia:</strong> gotowa procedura z minimum 5 krokami (każdy od czasownika) + notatka z wdrożenia lub rozmowy z co najmniej jedną konkretną obserwacją.<br>
     Nie ma "prawie" ani "zacząłem/am". Zaliczone albo niezaliczone.</p>
     <p style="margin-top:10px"><strong>Feedback od Uli</strong> otrzymasz do czwartku 30.04.2026, godz. 23:59.</p>
   </div>
@@ -393,9 +364,6 @@
 
 <script>
   const LS_KEY = 'w3_procedura_v2';
-
-  // ── URL SKRYPTU (wypełniony automatycznie) ──────────────────────────────
-  const SCRIPT_URL = 'TUTAJ_WKLEJ_URL_APPS_SCRIPT';
 
   // ── KROKI ───────────────────────────────────────────────────────────────
 
@@ -549,87 +517,12 @@
   document.addEventListener('input', zapiszStan);
   setInterval(zapiszStan, 10000);
 
-  // ── WYŚLIJ NA DYSK ──────────────────────────────────────────────────────
-
-  async function wyslijFormularz() {
-    zapiszStan();
-
-    // Walidacja
-    const imie = document.getElementById('uczestnik-imie').value.trim();
-    const email = document.getElementById('uczestnik-email').value.trim();
-    const procNazwa = document.getElementById('proc-nazwa').value.trim();
-    const notatka = document.getElementById('notatka').value.trim();
-
-    if (!imie || !email) {
-      pokazStatus('err', 'Uzupełnij imię i adres e-mail przed wysłaniem.');
-      return;
-    }
-    if (!procNazwa) {
-      pokazStatus('err', 'Uzupełnij nazwę procedury.');
-      return;
-    }
-
-    const kroki = [];
-    document.querySelectorAll('.krok-val').forEach(el => kroki.push(el.value));
-    if (kroki.filter(k => k.trim()).length < 5) {
-      pokazStatus('err', 'Wymagane minimum 5 kroków działania.');
-      return;
-    }
-
-    const wyjatki = [];
-    document.querySelectorAll('.wyjatek-val').forEach(el => wyjatki.push(el.value));
-
-    if (!notatka) {
-      pokazStatus('err', 'Uzupełnij notatkę z wdrożenia lub rozmowy.');
-      return;
-    }
-
-    const btn = document.getElementById('btn-wyslij');
-    btn.disabled = true;
-    btn.textContent = 'Wysyłanie…';
-
-    const dane = {
-      imie,
-      email,
-      proc_nazwa: procNazwa,
-      proc_cel:   document.getElementById('proc-cel').value,
-      proc_zakres: document.getElementById('proc-zakres').value,
-      proc_odp:   document.getElementById('proc-odpowiedzialnosc').value,
-      kroki,
-      wyjatki,
-      notatka
-    };
-
-    try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(dane)
-      });
-      btn.textContent = '✓ Wysłano!';
-      btn.style.background = '#2e7d32';
-      pokazStatus('ok', 'Zadanie wysłane! Ula je otrzymała. Możesz zamknąć formularz.');
-    } catch (err) {
-      btn.disabled = false;
-      btn.textContent = '→ Wyślij zadanie do Uli';
-      pokazStatus('err', 'Błąd połączenia. Spróbuj ponownie lub pobierz formularz i wyślij przez WebToLearn.');
-    }
-  }
-
-  function pokazStatus(typ, tekst) {
-    const el = document.getElementById('wyslij-status');
-    el.className = 'wyslij-status ' + typ;
-    el.textContent = tekst;
-    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
   // ── POBIERZ ─────────────────────────────────────────────────────────────
 
   function pobierzFormularz() {
     zapiszStan();
 
-    // Zbierz wszystkie dane bezpośrednio z DOM
+    // Zbierz dane bezpośrednio z DOM
     const kroki = [];
     document.querySelectorAll('.krok-val').forEach(el => kroki.push(el.value));
     const wyjatki = [];
@@ -647,12 +540,9 @@
       notatka:     document.getElementById('notatka').value
     };
 
-    // Klonuj dokument
+    // Klonuj dokument i usuń wszystkie skrypty (brak konfliktów z localStorage)
     const klon = document.documentElement.cloneNode(true);
-
-    // Usuń akcje, autosave bar i WSZYSTKIE skrypty
-    // (brak skryptów = brak konfliktów z localStorage)
-    klon.querySelectorAll('.akcja-section, .autosave-bar, script').forEach(el => el.remove());
+    klon.querySelectorAll('.pobierz-section, .autosave-bar, script').forEach(el => el.remove());
 
     // Ustaw pola statyczne po ID
     const setField = (id, val) => {
@@ -669,27 +559,19 @@
     setField('proc-odpowiedzialnosc', dane.proc_odp);
     setField('notatka',               dane.notatka);
 
-    // Odbuduj wiersze tabel przez DOM API (bezpieczne dla każdej przeglądarki)
+    // Odbuduj wiersze tabel przez DOM API (niezawodne w każdej przeglądarce)
     const buildRows = (tbodyId, values) => {
       const tbody = klon.querySelector('#' + tbodyId);
       if (!tbody) return;
       while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
       values.forEach((val, i) => {
         const tr = document.createElement('tr');
-        const tdN = document.createElement('td');
-        tdN.className = 'td-lp';
-        tdN.textContent = String(i + 1);
-        const tdT = document.createElement('td');
-        tdT.className = 'td-krok-text';
-        const ta = document.createElement('textarea');
-        ta.className = 'krok-input';
-        ta.textContent = val || '';
+        const tdN = document.createElement('td'); tdN.className = 'td-lp'; tdN.textContent = String(i + 1);
+        const tdT = document.createElement('td'); tdT.className = 'td-krok-text';
+        const ta  = document.createElement('textarea'); ta.className = 'krok-input'; ta.textContent = val || '';
         tdT.appendChild(ta);
-        const tdD = document.createElement('td');
-        tdD.className = 'td-del';
-        tr.appendChild(tdN);
-        tr.appendChild(tdT);
-        tr.appendChild(tdD);
+        const tdD = document.createElement('td'); tdD.className = 'td-del';
+        tr.appendChild(tdN); tr.appendChild(tdT); tr.appendChild(tdD);
         tbody.appendChild(tr);
       });
     };
@@ -704,7 +586,7 @@
     if (isIOS) {
       window.open(url, '_blank');
       setTimeout(() => URL.revokeObjectURL(url), 10000);
-      alert('Formularz otworzył się w nowej karcie.\n\nJak zapisać na iPhone:\n1. Naciśnij ikonę udostępniania ↑\n2. Wybierz „Zapisz na urządzeniu"\n3. Gotowe.');
+      alert('Twój formularz otworzył się w nowej karcie.\n\nJak go zapisać na iPhone:\n1. Naciśnij ikonę udostępniania (prostokąt ze strzałką ↑)\n2. Wybierz „Zapisz na urządzeniu" lub „Pliki"\n3. Gotowe — wyślij przez formularz na WebToLearn.');
       return;
     }
 
